@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UserCollectionActivity : AppCompatActivity() {
@@ -14,12 +15,16 @@ class UserCollectionActivity : AppCompatActivity() {
     private lateinit var editTextWeight: EditText
     private lateinit var buttonSubmit: Button
 
-    // Initialize Firestore
+    // Initialize Firestore and FirebaseAuth
     private val db = FirebaseFirestore.getInstance()
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_details)
+
+        // Initialize FirebaseAuth
+        auth = FirebaseAuth.getInstance()
 
         // Initialize the views
         editTextAge = findViewById(R.id.editTextAge)
@@ -42,29 +47,34 @@ class UserCollectionActivity : AppCompatActivity() {
 
             // Validate inputs
             if (age != null && height != null && weight != null && gender.isNotEmpty()) {
-                // Create a map to hold the user details
-                val userDetails = hashMapOf(
-                    "age" to age,
-                    "height" to height,
-                    "weight" to weight,
-                    "gender" to gender
-                )
+                // Get the currently signed-in user's email
+                val currentUser = auth.currentUser
+                if (currentUser != null) {
+                    val email = currentUser.email
 
-                // Assume a username or unique ID for the user
-                val username = "username" // This should be dynamically obtained or passed
+                    // Create a map to hold the user details
+                    val userDetails = hashMapOf(
+                        "age" to age,
+                        "height" to height,
+                        "weight" to weight,
+                        "gender" to gender
+                    )
 
-                // Save user details to Firestore
-                db.collection("users").document(username)
-                    .set(userDetails)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Details Saved Successfully!", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, HealthComplicationActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(this, "Failed to Save Details: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                    // Save user details to Firestore using the user's email as the document ID
+                    db.collection("users").document(email!!)
+                        .set(userDetails)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Details Saved Successfully!", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, HealthComplicationActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to Save Details: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "User not signed in!", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Toast.makeText(this, "Please fill out all fields!", Toast.LENGTH_SHORT).show()
             }

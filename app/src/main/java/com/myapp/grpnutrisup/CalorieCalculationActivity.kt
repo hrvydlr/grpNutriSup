@@ -1,7 +1,7 @@
 package com.myapp.grpnutrisup
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,14 +9,10 @@ import kotlin.math.roundToInt
 
 class CalorieCalculationActivity : AppCompatActivity() {
 
-    private lateinit var textViewCalorieResult: TextView
     private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_calorie_calculation)
-
-        textViewCalorieResult = findViewById(R.id.textViewCalorieResult)
 
         // Assume a username or unique ID for the user
         val username = "username" // Replace with actual user identifier
@@ -36,7 +32,11 @@ class CalorieCalculationActivity : AppCompatActivity() {
                     val tdee = calculateTDEE(bmr, activityLevel)
                     val adjustedCalories = adjustCaloriesForGoal(tdee, goal)
 
-                    textViewCalorieResult.text = "Your daily calorie requirement is: $adjustedCalories kcal"
+                    // Pass the calorie result to CalorieResultActivity
+                    val intent = Intent(this, CalorieResultActivity::class.java)
+                    intent.putExtra("calorieResult", adjustedCalories)
+                    startActivity(intent)
+                    finish()
                 } else {
                     Toast.makeText(this, "User data not found", Toast.LENGTH_SHORT).show()
                 }

@@ -16,6 +16,10 @@
             android:theme="@style/Theme.GrpNutriSup" />
         <activity android:name=".HealthComplicationActivity" />
         <activity android:name=".GoalSelectionActivity" />
+        <activity android:name=".CalorieResultActivity" />
+        <activity android:name=".CalorieCalculationActivity"/>
+        <activity android:name=".ActivityLevelActivity"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="false"
