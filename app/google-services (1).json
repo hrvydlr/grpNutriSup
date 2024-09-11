@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "690139926754",
+    "project_id": "nutrisuppas",
+    "storage_bucket": "nutrisuppas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690139926754:android:da1e526b13ac599b970ebb",
+        "android_client_info": {
+          "package_name": "com.myapp.grpnutrisup"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT-VJ0LCeoGwpuAzV3FOKkEQiqCizAQY8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

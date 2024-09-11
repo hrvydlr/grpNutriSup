@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:id="@+id/textViewGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="What is your goal?"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp" />
+
+    <Button
+        android:id="@+id/buttonMaintainWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Maintain Weight"
+        android:layout_below="@id/textViewGoal"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#57BF2A"/>
+
+    <Button
+        android:id="@+id/buttonLoseWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lose Weight"
+        android:layout_below="@id/buttonMaintainWeight"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#57BF2A"/>
+
+    <Button
+        android:id="@+id/buttonGainWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gain Weight"
+        android:layout_below="@id/buttonLoseWeight"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#57BF2A"/>
+    </LinearLayout>
+</RelativeLayout>
