@@ -2,56 +2,55 @@ package com.myapp.grpnutrisup
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 
 class SignupActivity : AppCompatActivity() {
 
     private lateinit var editTextEmail: EditText
     private lateinit var editTextPassword: EditText
-    private lateinit var editTextConfirmPassword: EditText
     private lateinit var buttonSignup: Button
-    private lateinit var buttonLogin: Button
+
+    // Declare an instance of FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        // Initialize the views
+        // Initialize FirebaseAuth
+        auth = FirebaseAuth.getInstance()
+
+        // Initialize EditTexts and Buttons with correct IDs
         editTextEmail = findViewById(R.id.editTextEmail)
         editTextPassword = findViewById(R.id.editTextPassword)
-        editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword)
         buttonSignup = findViewById(R.id.buttonSignup)
-        buttonLogin = findViewById(R.id.buttonLogin)
 
         buttonSignup.setOnClickListener {
             val email = editTextEmail.text.toString()
             val password = editTextPassword.text.toString()
-            val confirmPassword = editTextConfirmPassword.text.toString()
 
-            if (password == confirmPassword) {
-                val db = DatabaseHelper(this)
-                val isSuccess = db.addUser(email, password) // Ensure this matches your method
-                if (isSuccess > -1) {
-                    Toast.makeText(this, "Signup Successful!", Toast.LENGTH_SHORT).show()
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                // Use FirebaseAuth to create a new user with email and password
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(this, "Signup Successful!", Toast.LENGTH_SHORT).show()
 
-                    // Start UserCollectionActivity
-                    val intent = Intent(this, UserCollectionActivity::class.java)
-                    startActivity(intent)
-                    finish() // Optionally finish this activity to remove it from the back stack
-                } else {
-                    Toast.makeText(this, "Signup Failed", Toast.LENGTH_SHORT).show()
-                }
+                            // Redirect to UserCollectionActivity after successful signup
+                            val intent = Intent(this, UserCollectionActivity::class.java)
+                            startActivity(intent)
+                            finish() // Optional: Close SignupActivity so the user can't go back to it
+                        } else {
+                            Toast.makeText(this, "Signup Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
             } else {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please fill out all fields!", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        buttonLogin.setOnClickListener {
-            // Handle login button click, if needed
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
         }
     }
 }

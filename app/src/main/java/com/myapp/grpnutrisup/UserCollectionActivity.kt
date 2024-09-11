@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.firestore.FirebaseFirestore
 
 class UserCollectionActivity : AppCompatActivity() {
 
@@ -12,6 +13,9 @@ class UserCollectionActivity : AppCompatActivity() {
     private lateinit var editTextHeight: EditText
     private lateinit var editTextWeight: EditText
     private lateinit var buttonSubmit: Button
+
+    // Initialize Firestore
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,18 +42,29 @@ class UserCollectionActivity : AppCompatActivity() {
 
             // Validate inputs
             if (age != null && height != null && weight != null && gender.isNotEmpty()) {
-                // Save the user details to the database
-                val db = DatabaseHelper(this)
-                val isSuccess = db.addUserDetails("username", age, gender, height, weight) // Ensure you pass a valid username
-                if (isSuccess > -1) {
-                    Toast.makeText(this, "Details Saved Successfully!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, HealthComplicationActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                    // Redirect to another activity or clear the form after saving
-                } else {
-                    Toast.makeText(this, "Failed to Save Details", Toast.LENGTH_SHORT).show()
-                }
+                // Create a map to hold the user details
+                val userDetails = hashMapOf(
+                    "age" to age,
+                    "height" to height,
+                    "weight" to weight,
+                    "gender" to gender
+                )
+
+                // Assume a username or unique ID for the user
+                val username = "username" // This should be dynamically obtained or passed
+
+                // Save user details to Firestore
+                db.collection("users").document(username)
+                    .set(userDetails)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Details Saved Successfully!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, HealthComplicationActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Failed to Save Details: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
             } else {
                 Toast.makeText(this, "Please fill out all fields!", Toast.LENGTH_SHORT).show()
             }
