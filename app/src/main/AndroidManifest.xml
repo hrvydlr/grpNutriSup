@@ -19,6 +19,7 @@
         <activity android:name=".CalorieResultActivity" />
         <activity android:name=".CalorieCalculationActivity"/>
         <activity android:name=".ActivityLevelActivity"/>
+        <activity android:name=".AllergenSelectionActivity"/>
 
         <activity
             android:name=".MainActivity"

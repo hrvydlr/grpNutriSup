@@ -62,7 +62,7 @@ class HealthComplicationActivity : AppCompatActivity() {
                     .update(userResponse)
                     .addOnSuccessListener {
                         Toast.makeText(this, "Response Saved Successfully!", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, GoalSelectionActivity::class.java)
+                        val intent = Intent(this, AllergenSelectionActivity::class.java)
                         startActivity(intent)
                         finish() // Optionally close this activity
                     }

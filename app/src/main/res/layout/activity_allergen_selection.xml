@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- ImageView added at the top -->
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textViewAllergenPrompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please select any allergens you have:"
+        android:textSize="18sp"
+        android:paddingBottom="16dp"
+        android:layout_marginLeft="50dp"/>
+
+    <!-- Use GridLayout to display allergens in two rows -->
+    <GridLayout
+        android:id="@+id/gridLayoutAllergens"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="5"
+        android:orientation="horizontal"
+        android:layout_marginLeft="70dp">
+
+        <!-- First column -->
+        <CheckBox
+            android:id="@+id/checkBoxMilk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Milk" />
+
+        <CheckBox
+            android:id="@+id/checkBoxEggs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Eggs" />
+        <CheckBox
+            android:id="@+id/checkBoxShellfish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crustacean shellfish " />
+
+        <CheckBox
+            android:id="@+id/checkBoxFish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fish " />
+
+        <!-- Second column -->
+        <CheckBox
+            android:id="@+id/checkBoxTreeNuts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tree nuts" />
+
+        <CheckBox
+            android:id="@+id/checkBoxPeanuts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Peanuts" />
+
+        <CheckBox
+            android:id="@+id/checkBoxWheat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wheat" />
+
+        <CheckBox
+            android:id="@+id/checkBoxSoybeans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Soybeans" />
+
+        <!-- Extra column for more options -->
+        <CheckBox
+            android:id="@+id/checkBoxSesame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sesame" />
+
+        <CheckBox
+            android:id="@+id/checkBoxNone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="None" />
+    </GridLayout>
+
+    <!-- Button adjusted to fit the screen width -->
+    <Button
+        android:id="@+id/buttonSubmitAllergens"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_marginTop="24dp"
+        android:padding="12dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="#57BF2A"/>
+
+</LinearLayout>
