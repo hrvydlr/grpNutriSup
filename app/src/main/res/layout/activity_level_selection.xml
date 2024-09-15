@@ -24,31 +24,31 @@
             android:id="@+id/radioSedentary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sedentary (little or no exercise)" />
+            android:text="Sedentary" />
 
         <RadioButton
             android:id="@+id/radioLightlyActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lightly active (light exercise/sports 1-3 days/week)" />
+            android:text="Lightly active" />
 
         <RadioButton
             android:id="@+id/radioModeratelyActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Moderately active (moderate exercise/sports 3-5 days/week)" />
+            android:text="Moderately active" />
 
         <RadioButton
             android:id="@+id/radioVeryActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Very active (hard exercise/sports 6-7 days a week)" />
+            android:text="Very active" />
 
         <RadioButton
             android:id="@+id/radioSuperActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Super active (very hard exercise, physical job, or training twice a day)" />
+            android:text="Super active" />
 
     </RadioGroup>
 
