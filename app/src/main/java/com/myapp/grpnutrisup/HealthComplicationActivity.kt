@@ -13,7 +13,7 @@ class HealthComplicationActivity : AppCompatActivity() {
 
     private lateinit var buttonYes: Button
     private lateinit var buttonNo: Button
-    private val db = FirebaseFirestore.getInstance() // Initialize Firestore instance
+    private val db = FirebaseFirestore.getInstance()
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
