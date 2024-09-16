@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/weightGoalLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center_horizontal">
+
+    <!-- Title -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:id="@+id/weightGoalTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Your Weight Goal"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"/>
+
+    <!-- Desired Weight Input -->
+    <EditText
+        android:id="@+id/editTextDesiredWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your desired weight (kg)"
+        android:inputType="numberDecimal"
+        android:layout_marginTop="20dp"/>
+
+    <!-- Weekly Weight Change Question -->
+    <TextView
+        android:id="@+id/textViewWeightChangeQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="How much weight do you want to lose/gain per week?"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"/>
+
+    <!-- RadioGroup for Weight Change Options -->
+    <RadioGroup
+        android:id="@+id/radioGroupWeightChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <RadioButton
+            android:id="@+id/radioButton0_25kg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.25 kg"/>
+
+        <RadioButton
+            android:id="@+id/radioButton0_5kg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.5 kg"/>
+
+        <RadioButton
+            android:id="@+id/radioButton0_75kg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.75 kg"/>
+    </RadioGroup>
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/buttonSubmitWeightGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_marginTop="20dp"/>
+</LinearLayout>

@@ -20,6 +20,7 @@
         <activity android:name=".CalorieCalculationActivity"/>
         <activity android:name=".ActivityLevelActivity"/>
         <activity android:name=".AllergenSelectionActivity"/>
+        <activity android:name=".WeightGoalActivity"/>
 
         <activity
             android:name=".MainActivity"
@@ -30,11 +31,6 @@
             android:name=".UserCollectionActivity"
             android:exported="false"
             android:label="@string/title_activity_user_details"
-            android:theme="@style/Theme.GrpNutriSup" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:label="@string/title_activity_main"
             android:theme="@style/Theme.GrpNutriSup" />
         <activity
             android:name=".SignupActivity"

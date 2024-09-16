@@ -16,7 +16,7 @@ class ActivityLevelActivity : AppCompatActivity() {
     private lateinit var radioGroupActivityLevel: RadioGroup
     private lateinit var buttonSubmit: Button
     private lateinit var auth: FirebaseAuth
-    private val db = FirebaseFirestore.getInstance() // Initialize Firestore instance
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

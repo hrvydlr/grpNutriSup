@@ -31,7 +31,7 @@ class AllergenSelectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_allergen_selection)
 
-        // Initialize FirebaseAuth and Firestore
+
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 

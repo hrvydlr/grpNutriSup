@@ -13,7 +13,7 @@ class GoalSelectionActivity : AppCompatActivity() {
     private lateinit var buttonMaintainWeight: Button
     private lateinit var buttonLoseWeight: Button
     private lateinit var buttonGainWeight: Button
-    private val db = FirebaseFirestore.getInstance() // Initialize Firestore instance
+    private val db = FirebaseFirestore.getInstance()
     private lateinit var auth: FirebaseAuth // Initialize FirebaseAuth instance
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,10 +57,19 @@ class GoalSelectionActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     Toast.makeText(this, "Goal Saved Successfully!", Toast.LENGTH_SHORT).show()
 
-                    // Navigate to CalorieCalculationActivity
-                    val intent = Intent(this, CalorieCalculationActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    // Navigate to the appropriate screen based on the goal
+                    if (goal == "Maintain") {
+                        // Go directly to CalorieCalculationActivity for maintain goal
+                        val intent = Intent(this, CalorieCalculationActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // Go to WeightGoalActivity for Lose or Gain goal
+                        val intent = Intent(this, WeightGoalActivity::class.java)
+                        intent.putExtra("goal", goal) // Pass the selected goal to the next activity
+                        startActivity(intent)
+                        finish()
+                    }
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(this, "Failed to Save Goal: ${e.message}", Toast.LENGTH_SHORT).show()

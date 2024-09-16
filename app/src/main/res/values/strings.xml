@@ -4,4 +4,6 @@
     <string name="title_activity_user_details">UserDetailsActivity</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_goal">Select Goal</string>
+    <string name="prompt_weekly_weight_change">Select Weekly Weight Change</string>
 </resources>
