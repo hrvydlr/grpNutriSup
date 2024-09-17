@@ -4,6 +4,16 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            android:layout_marginTop="20dp"/>
     <TextView
         android:id="@+id/textViewCalorieResult"
         android:layout_width="wrap_content"
@@ -11,4 +21,14 @@
         android:textSize="24sp"
         android:layout_centerInParent="true"
         android:text="Your daily calorie requirement is: 0 kcal"/>
+    <Button
+        android:id="@+id/buttonNext"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#57BF2A" />
+    </LinearLayout>
 </RelativeLayout>
