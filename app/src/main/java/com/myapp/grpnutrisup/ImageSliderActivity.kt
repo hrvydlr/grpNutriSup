@@ -4,10 +4,8 @@ import ImageSliderAdapter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
-import com.myapp.grpnutrisup.R
 
 class ImageSliderActivity : AppCompatActivity() {
 
