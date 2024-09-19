@@ -1,6 +1,8 @@
 package com.myapp.grpnutrisup
 
+import android.content.Intent // <-- Import this for startActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class CalorieResultActivity : AppCompatActivity() {
 
     private lateinit var textViewCalorieResult: TextView
+    private lateinit var buttonNext: Button
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
@@ -22,6 +25,7 @@ class CalorieResultActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
 
         textViewCalorieResult = findViewById(R.id.textViewCalorieResult)
+        buttonNext = findViewById(R.id.buttonNext) // Find the button by its ID
 
         // Get the calorie result from the intent
         val calorieResult = intent.getIntExtra("calorieResult", 0)
@@ -31,6 +35,14 @@ class CalorieResultActivity : AppCompatActivity() {
 
         // Save the calorie result to Firestore
         saveCalorieResult(calorieResult)
+
+        // Set click listener for the "Next" button
+        buttonNext.setOnClickListener {
+            // Navigate to MainActivity
+            val intent = Intent(this@CalorieResultActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish() // Optionally, close the current activity to prevent returning to it
+        }
     }
 
     private fun saveCalorieResult(calorieResult: Int) {
