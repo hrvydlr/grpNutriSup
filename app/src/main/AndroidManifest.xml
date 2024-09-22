@@ -21,6 +21,8 @@
         <activity android:name=".ActivityLevelActivity"/>
         <activity android:name=".AllergenSelectionActivity"/>
         <activity android:name=".WeightGoalActivity"/>
+        <activity android:name=".ProfileActivity"/>
+        <activity android:name=".EditProfileActivity"/>
 
         <activity
             android:name=".MainActivity"
