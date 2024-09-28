@@ -23,6 +23,7 @@
         <activity android:name=".WeightGoalActivity"/>
         <activity android:name=".ProfileActivity"/>
         <activity android:name=".EditProfileActivity"/>
+        <activity android:name=".FoodSearchActivity" />
 
         <activity
             android:name=".MainActivity"
