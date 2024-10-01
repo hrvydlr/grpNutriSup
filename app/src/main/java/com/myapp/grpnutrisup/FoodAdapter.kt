@@ -26,12 +26,12 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
         val food = foodList[position]
-        holder.foodNameTextView.text = food.foodName // Make sure the property is `name`
+        holder.foodNameTextView.text = food.foodName
         holder.foodDescriptionTextView.text = food.description
 
-        // Handle favorite button click
+        // Toggle favourite button
         holder.favouriteButton.setOnClickListener {
-            addToFavourites(food)
+            addToFavourites(food, holder)
         }
     }
 
@@ -39,25 +39,28 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
         return foodList.size
     }
 
-    private fun addToFavourites(food: Food) {
+    // Method to update the food list
+    fun updateList(newList: List<Food>) {
+        foodList = newList
+        notifyDataSetChanged()  // Notify the adapter that the data has changed
+    }
+
+    private fun addToFavourites(food: Food, holder: FoodViewHolder) {
         val userEmail = auth.currentUser?.email
         if (userEmail != null) {
-            // Create a map to hold the favorite food data
             val favouriteData = mapOf(
-                "food_name" to food.foodName, // Adjust to match your Food class property
+                "food_name" to food.foodName,
                 "description" to food.description
             )
-
-            // Add to Firestore under the user's favourites collection
             db.collection("users").document(userEmail).collection("favourites").add(favouriteData)
                 .addOnSuccessListener {
                     Toast.makeText(context, "${food.foodName} added to favourites!", Toast.LENGTH_SHORT).show()
+                    // Change star icon to 'on' state
+                    holder.favouriteButton.setImageResource(android.R.drawable.star_big_on)
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(context, "Failed to add favourite: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-        } else {
-            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -65,11 +68,5 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
         val foodNameTextView: TextView = itemView.findViewById(R.id.foodNameTextView)
         val foodDescriptionTextView: TextView = itemView.findViewById(R.id.foodDescriptionTextView)
         val favouriteButton: ImageButton = itemView.findViewById(R.id.favouriteButton)
-    }
-
-    // Update the food list when filtered results are available
-    fun updateList(newFoodList: List<Food>) {
-        foodList = newFoodList
-        notifyDataSetChanged()
     }
 }

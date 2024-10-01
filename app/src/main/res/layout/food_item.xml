@@ -1,33 +1,38 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Food Name TextView -->
     <TextView
         android:id="@+id/foodNameTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Food Name"
         android:textStyle="bold"
         android:textSize="18sp"
         android:textColor="@android:color/black"/>
 
+    <!-- Food Description TextView -->
     <TextView
         android:id="@+id/foodDescriptionTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Food Description"
         android:textSize="14sp"
         android:textColor="@android:color/darker_gray"
         android:layout_marginTop="4dp"/>
 
+    <!-- ImageButton for Adding to Favourites -->
     <ImageButton
         android:id="@+id/favouriteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/btn_star"
+        android:src="@android:drawable/star_big_off"
         android:contentDescription="Add to Favourites"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_gravity="end"/>
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"/>
 </LinearLayout>
