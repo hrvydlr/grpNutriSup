@@ -29,6 +29,12 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
         holder.foodNameTextView.text = food.foodName
         holder.foodDescriptionTextView.text = food.description
 
+        // Bind nutritional data to TextViews
+        holder.foodCaloriesTextView.text = "Calories: ${food.calories} kcal"
+        holder.foodCarbsTextView.text = "Carbohydrates: ${food.carbohydrates}g"
+        holder.foodProteinsTextView.text = "Proteins: ${food.proteins}g"
+        holder.foodFatsTextView.text = "Fats: ${food.fats}g"
+
         // Toggle favourite button
         holder.favouriteButton.setOnClickListener {
             addToFavourites(food, holder)
@@ -67,6 +73,10 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
     class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val foodNameTextView: TextView = itemView.findViewById(R.id.foodNameTextView)
         val foodDescriptionTextView: TextView = itemView.findViewById(R.id.foodDescriptionTextView)
+        val foodCaloriesTextView: TextView = itemView.findViewById(R.id.foodCaloriesTextView)
+        val foodCarbsTextView: TextView = itemView.findViewById(R.id.foodCarbsTextView)
+        val foodProteinsTextView: TextView = itemView.findViewById(R.id.foodProteinsTextView)
+        val foodFatsTextView: TextView = itemView.findViewById(R.id.foodFatsTextView)
         val favouriteButton: ImageButton = itemView.findViewById(R.id.favouriteButton)
     }
 }

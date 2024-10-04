@@ -25,6 +25,39 @@
         android:textColor="@android:color/darker_gray"
         android:layout_marginTop="4dp"/>
 
+    <!-- Additional Nutritional Information -->
+    <TextView
+        android:id="@+id/foodCaloriesTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Calories: "
+        android:textSize="14sp"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/foodCarbsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Carbohydrates: "
+        android:textSize="14sp"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/foodProteinsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Proteins: "
+        android:textSize="14sp"
+        android:textColor="@android:color/black"/>
+
+    <TextView
+        android:id="@+id/foodFatsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fats: "
+        android:textSize="14sp"
+        android:textColor="@android:color/black"/>
+
     <!-- ImageButton for Adding to Favourites -->
     <ImageButton
         android:id="@+id/favouriteButton"
