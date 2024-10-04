@@ -12,8 +12,12 @@ import com.myapp.grpnutrisup.models.Food
 
 class MealPlanActivity : AppCompatActivity() {
 
-    private lateinit var foodAdapter: FoodAdapter
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var breakfastRecyclerView: RecyclerView
+    private lateinit var lunchRecyclerView: RecyclerView
+    private lateinit var dinnerRecyclerView: RecyclerView
+    private lateinit var breakfastAdapter: FoodAdapter
+    private lateinit var lunchAdapter: FoodAdapter
+    private lateinit var dinnerAdapter: FoodAdapter
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
@@ -21,12 +25,22 @@ class MealPlanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meal_plan)
 
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        breakfastRecyclerView = findViewById(R.id.breakfastRecyclerView)
+        lunchRecyclerView = findViewById(R.id.lunchRecyclerView)
+        dinnerRecyclerView = findViewById(R.id.dinnerRecyclerView)
 
-        // Initialize the food adapter with an empty list
-        foodAdapter = FoodAdapter(this, emptyList())
-        recyclerView.adapter = foodAdapter
+        // Set up each RecyclerView with its own adapter
+        breakfastRecyclerView.layoutManager = LinearLayoutManager(this)
+        lunchRecyclerView.layoutManager = LinearLayoutManager(this)
+        dinnerRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        breakfastAdapter = FoodAdapter(this, emptyList())
+        lunchAdapter = FoodAdapter(this, emptyList())
+        dinnerAdapter = FoodAdapter(this, emptyList())
+
+        breakfastRecyclerView.adapter = breakfastAdapter
+        lunchRecyclerView.adapter = lunchAdapter
+        dinnerRecyclerView.adapter = dinnerAdapter
 
         // Fetch meal plan data from Firestore
         fetchMealPlan()
@@ -36,7 +50,6 @@ class MealPlanActivity : AppCompatActivity() {
         val currentUserEmail = auth.currentUser?.email
 
         if (currentUserEmail != null) {
-            // Fetch user data (e.g., goal and allergies)
             db.collection("users").document(currentUserEmail).get()
                 .addOnSuccessListener { userDocument ->
                     if (userDocument != null) {
@@ -45,20 +58,30 @@ class MealPlanActivity : AppCompatActivity() {
 
                         // Fetch food items based on user's goal
                         db.collection("foods")
-                            .whereEqualTo("goal", userGoal) // Filter by goal
+                            .whereEqualTo("goal", userGoal)
                             .get()
                             .addOnSuccessListener { result ->
-                                val foodList = mutableListOf<Food>()
+                                val breakfastList = mutableListOf<Food>()
+                                val lunchList = mutableListOf<Food>()
+                                val dinnerList = mutableListOf<Food>()
+
                                 for (document in result) {
                                     val food = document.toObject(Food::class.java)
 
-                                    // Check if the food contains any of the user's allergies
+                                    // Check for allergies
                                     if (!userAllergies.any { food.description.contains(it, ignoreCase = true) }) {
-                                        foodList.add(food) // Add the food if no allergies match
+                                        when (food.mealType) {
+                                            "Breakfast" -> breakfastList.add(food)
+                                            "Lunch" -> lunchList.add(food)
+                                            "Dinner" -> dinnerList.add(food)
+                                        }
                                     }
                                 }
-                                // Update the RecyclerView with the filtered meal plan
-                                foodAdapter.updateList(foodList)
+
+                                // Update the RecyclerViews with respective meal plans
+                                breakfastAdapter.updateList(breakfastList)
+                                lunchAdapter.updateList(lunchList)
+                                dinnerAdapter.updateList(dinnerList)
                             }
                             .addOnFailureListener { exception ->
                                 Toast.makeText(this, "Error getting meal plan: ${exception.message}", Toast.LENGTH_SHORT).show()
