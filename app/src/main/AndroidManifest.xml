@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.myapp.grpnutrisup">
 
+    <!-- Permissions should be declared here -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GrpNutriSup">
+
         <activity
             android:name=".LoginActivity"
             android:exported="false"
@@ -17,14 +22,21 @@
         <activity android:name=".HealthComplicationActivity" />
         <activity android:name=".GoalSelectionActivity" />
         <activity android:name=".CalorieResultActivity" />
-        <activity android:name=".CalorieCalculationActivity"/>
-        <activity android:name=".ActivityLevelActivity"/>
-        <activity android:name=".AllergenSelectionActivity"/>
-        <activity android:name=".WeightGoalActivity"/>
-        <activity android:name=".ProfileActivity"/>
-        <activity android:name=".EditProfileActivity"/>
+        <activity android:name=".CalorieCalculationActivity" />
+        <activity android:name=".ActivityLevelActivity" />
+        <activity android:name=".AllergenSelectionActivity" />
+        <activity android:name=".WeightGoalActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".EditProfileActivity" />
         <activity android:name=".FoodSearchActivity" />
+        <activity
+            android:name=".MealPlanActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar">
+        </activity>
 
+
+
+        <!-- MainActivity and other activities -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
@@ -40,10 +52,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
