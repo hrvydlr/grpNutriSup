@@ -1,12 +1,15 @@
 package com.myapp.grpnutrisup
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.myapp.grpnutrisup.FoodSearchActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,12 +41,41 @@ class MainActivity : AppCompatActivity() {
 
         // Fetch data from Firebase and update the UI
         fetchUserDataAndUpdateUI()
+
+        // Initialize the Bottom Navigation View
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
+
+        // Set up the navigation item selection listener
+        bottomNavigation.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    // No action needed as this is the current activity
+                    true
+                }
+                R.id.navigation_search -> {
+                    // Start FoodSearchActivity
+                    startActivity(Intent(this, FoodSearchActivity::class.java))
+                    true
+                }
+                R.id.navigation_meal -> {
+                    // Start MealPlanActivity
+                    startActivity(Intent(this, MealPlanActivity::class.java))
+                    true
+                }
+                R.id.navigation_profile -> {
+                    // Start ProfileActivity
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun fetchUserDataAndUpdateUI() {
         val currentUser = auth.currentUser
-        if (currentUser != null) {
-            val userEmail = currentUser.email
+        currentUser?.let { user ->
+            val userEmail = user.email
             if (userEmail != null) {
                 val userRef = firestore.collection("users").document(userEmail)
 
@@ -54,39 +86,24 @@ class MainActivity : AppCompatActivity() {
                             val calorieGoal = document.getLong("calorieResult")?.toInt() ?: 2000
                             val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 600
 
-                            // Log values
-                            Log.d(
-                                "MainActivity",
-                                "Calorie Intake: $calorieIntake, Calorie Goal: $calorieGoal"
-                            )
-
-                            // Update UI on the main thread
-                            runOnUiThread {
-                                caloriesValueTextView.text = "$calorieIntake/$calorieGoal"
-                                caloriesProgressBar.max = calorieGoal
-                                caloriesProgressBar.progress = calorieIntake
-                            }
+                            // Update UI
+                            caloriesValueTextView.text = "$calorieIntake/$calorieGoal"
+                            caloriesProgressBar.max = calorieGoal
+                            caloriesProgressBar.progress = calorieIntake
 
                             val proteinIntake = document.getLong("proteinIntake")?.toInt() ?: 150
                             val proteinGoal = document.getLong("proteinGoal")?.toInt() ?: 800
                             val fatsIntake = document.getLong("fatsIntake")?.toInt() ?: 90
                             val fatsGoal = document.getLong("fatsGoal")?.toInt() ?: 500
 
-                            Log.d(
-                                "MainActivity",
-                                "Protein Intake: $proteinIntake, Protein Goal: $proteinGoal"
-                            )
-                            Log.d("MainActivity", "Fats Intake: $fatsIntake, Fats Goal: $fatsGoal")
+                            // Update protein and fats UI
+                            proteinValueTextView.text = "$proteinIntake/$proteinGoal"
+                            proteinProgressBar.max = proteinGoal
+                            proteinProgressBar.progress = proteinIntake
 
-                            runOnUiThread {
-                                proteinValueTextView.text = "$proteinIntake/$proteinGoal"
-                                proteinProgressBar.max = proteinGoal
-                                proteinProgressBar.progress = proteinIntake
-
-                                fatsValueTextView.text = "$fatsIntake/$fatsGoal"
-                                fatsProgressBar.max = fatsGoal
-                                fatsProgressBar.progress = fatsIntake
-                            }
+                            fatsValueTextView.text = "$fatsIntake/$fatsGoal"
+                            fatsProgressBar.max = fatsGoal
+                            fatsProgressBar.progress = fatsIntake
                         } else {
                             Log.d("MainActivity", "No such document")
                         }
@@ -97,9 +114,8 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("MainActivity", "User email is null")
             }
-        } else {
+        } ?: run {
             Log.d("MainActivity", "User is not logged in")
         }
     }
 }
-

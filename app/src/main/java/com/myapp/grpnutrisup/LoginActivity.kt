@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
                             Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
 
                             // Redirect to MainActivity after successful login
-                            val intent = Intent(this, CalorieResultActivity::class.java)
+                            val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                             finish() // Optional: Close LoginActivity so the user can't go back to it
                         } else {

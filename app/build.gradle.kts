@@ -81,4 +81,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout.v220beta01)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.imageslideshow) // Ensure this is correct
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    implementation(libs.okhttp)
+
+
+
 }
