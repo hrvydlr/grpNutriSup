@@ -34,18 +34,18 @@ class MealPlanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meal_plan)
 
+        // Debugging log
         Log.d("MealPlanActivity", "Layout set, initializing views.")
 
-        // Initialize RecyclerViews and Adapters
-        setupRecyclerViews()
+        breakfastRecyclerView = findViewById(R.id.breakfastRecyclerView)
+        lunchRecyclerView = findViewById(R.id.lunchRecyclerView)
+        dinnerRecyclerView = findViewById(R.id.dinnerRecyclerView)
 
-        // Setup bottom navigation after initializing views
-        setupBottomNavigation()
-
-        // Fetch meal plan data
-        fetchMealPlan()
+        // Check if RecyclerViews are initialized
+        if (breakfastRecyclerView == null || lunchRecyclerView == null || dinnerRecyclerView == null) {
+            Log.e("MealPlanActivity", "One of the RecyclerViews is null.")
+        }
     }
-
 
 
     /**
