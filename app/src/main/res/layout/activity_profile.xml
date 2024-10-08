@@ -35,7 +35,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:paddingBottom="16dp"
-                android:textColor="@android:color/black"/>
+                android:textColor="@android:color/black" />
 
             <!-- Age -->
             <LinearLayout
@@ -196,5 +196,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
