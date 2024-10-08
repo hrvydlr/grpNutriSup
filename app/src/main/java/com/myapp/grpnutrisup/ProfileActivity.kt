@@ -47,18 +47,22 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun loadProfileData() {
-        val userEmail = auth.currentUser?.email
+        val userEmail = auth.currentUser?.email  // Get the current user's email
         if (userEmail != null) {
             db.collection("users").document(userEmail).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        // Directly set the values from Firestore without conversion
-                        textViewAge.text = "${document.getLong("age") ?: ""}"
-                        textViewHeight.text = "${document.getDouble("height") ?: 0}"
-                        textViewWeight.text = "${document.getDouble("weight") ?: 0}"
-                        textViewAllergens.text = document.getString("allergens") ?: ""
+                        // Populate fields with user's data
+                        textViewAge.text = document.getLong("age")?.toString() ?: ""
+                        textViewHeight.text = document.getDouble("height")?.toString() ?: ""
+                        textViewWeight.text = document.getDouble("weight")?.toString() ?: ""
+
+                        // Change here to handle allergens as a list
+                        val allergensList = document.get("allergens") as? List<String> ?: emptyList()
+                        textViewAllergens.text = allergensList.joinToString(", ") // Join list into a string
+
                         textViewGoal.text = document.getString("goal") ?: ""
-                        textViewWeeklyWeightChange.text = "${document.getDouble("weeklyWeightChange") ?: 0}"
+                        textViewWeeklyWeightChange.text = document.getDouble("weeklyWeightChange")?.toString() ?: ""
                     }
                 }
                 .addOnFailureListener { e ->
