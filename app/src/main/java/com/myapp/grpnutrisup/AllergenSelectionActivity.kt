@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -22,6 +23,8 @@ class AllergenSelectionActivity : AppCompatActivity() {
     private lateinit var checkBoxSoybeans: CheckBox
     private lateinit var checkBoxSesame: CheckBox
     private lateinit var checkBoxNone: CheckBox
+    private lateinit var checkBoxOthers: CheckBox
+    private lateinit var editTextOthers: EditText
     private lateinit var buttonSubmitAllergens: Button
 
     private lateinit var auth: FirebaseAuth
@@ -30,7 +33,6 @@ class AllergenSelectionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_allergen_selection)
-
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
@@ -46,15 +48,26 @@ class AllergenSelectionActivity : AppCompatActivity() {
         checkBoxSoybeans = findViewById(R.id.checkBoxSoybeans)
         checkBoxSesame = findViewById(R.id.checkBoxSesame)
         checkBoxNone = findViewById(R.id.checkBoxNone)
+        checkBoxOthers = findViewById(R.id.checkBoxOthers) // New CheckBox for Others
+        editTextOthers = findViewById(R.id.editTextOthers)  // New EditText for custom input
         buttonSubmitAllergens = findViewById(R.id.buttonSubmitAllergens)
+
+        // Disable the "Others" input initially
+        editTextOthers.isEnabled = false
 
         // Handle the "None" checkbox logic
         checkBoxNone.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 disableAllOtherCheckBoxes(true)
+                editTextOthers.isEnabled = false // Disable "Others" EditText when "None" is selected
             } else {
                 disableAllOtherCheckBoxes(false)
             }
+        }
+
+        // Enable "Others" input only when the "Others" checkbox is selected
+        checkBoxOthers.setOnCheckedChangeListener { _, isChecked ->
+            editTextOthers.isEnabled = isChecked
         }
 
         buttonSubmitAllergens.setOnClickListener {
@@ -73,6 +86,8 @@ class AllergenSelectionActivity : AppCompatActivity() {
         checkBoxWheat.isEnabled = !disable
         checkBoxSoybeans.isEnabled = !disable
         checkBoxSesame.isEnabled = !disable
+        checkBoxOthers.isEnabled = !disable
+        editTextOthers.isEnabled = !disable && checkBoxOthers.isChecked // Enable/Disable the Others EditText
     }
 
     private fun saveAllergens() {
@@ -93,6 +108,14 @@ class AllergenSelectionActivity : AppCompatActivity() {
                 if (checkBoxSoybeans.isChecked) allergens.add("Soybeans")
                 if (checkBoxSesame.isChecked) allergens.add("Sesame")
                 if (checkBoxNone.isChecked) allergens.add("None")
+
+                // Check for "Others" and add the custom input if the checkbox is selected
+                if (checkBoxOthers.isChecked) {
+                    val otherAllergen = editTextOthers.text.toString().trim()
+                    if (otherAllergen.isNotEmpty()) {
+                        allergens.add(otherAllergen)
+                    }
+                }
 
                 // Create a map to store the allergen data
                 val allergenData = mapOf(

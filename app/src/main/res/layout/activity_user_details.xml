@@ -86,5 +86,17 @@
             android:backgroundTint="#57BF2A"
             android:layout_marginLeft="130dp"
             />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="20"
+            android:layout_marginTop="128sp"
+            android:layout_marginBottom="8dp" />
+
+
     </LinearLayout>
 </RelativeLayout>

@@ -21,7 +21,7 @@
         android:text="Please select any allergens you have:"
         android:textSize="18sp"
         android:paddingBottom="16dp"
-        android:layout_marginLeft="50dp"/>
+        android:layout_gravity="center_horizontal"/>
 
     <!-- Use GridLayout to display allergens in two rows -->
     <GridLayout
@@ -29,9 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
-        android:rowCount="5"
         android:orientation="horizontal"
-        android:layout_marginLeft="70dp">
+        android:layout_gravity="center">
 
         <!-- First column -->
         <CheckBox
@@ -45,17 +44,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Eggs" />
+
         <CheckBox
             android:id="@+id/checkBoxShellfish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Crustacean shellfish " />
+            android:text="Crustacean shellfish" />
 
         <CheckBox
             android:id="@+id/checkBoxFish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fish " />
+            android:text="Fish" />
 
         <!-- Second column -->
         <CheckBox
@@ -94,7 +94,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="None" />
+
+        <!-- New Others Checkbox -->
+        <CheckBox
+            android:id="@+id/checkBoxOthers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Others (Specify)" />
     </GridLayout>
+
+    <!-- EditText for custom allergens -->
+    <EditText
+        android:id="@+id/editTextOthers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Specify other allergens"
+        android:inputType="text"
+        android:enabled="false"
+    android:layout_marginTop="8dp" />
 
     <!-- Button adjusted to fit the screen width -->
     <Button
@@ -102,9 +119,19 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="Submit"
-        android:layout_marginTop="24dp"
         android:padding="12dp"
         android:layout_gravity="center_horizontal"
         android:backgroundTint="#57BF2A"/>
+
+    <!-- ProgressBar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="60"
+        android:layout_marginTop="8sp"
+        android:layout_marginBottom="8dp" />
 
 </LinearLayout>
