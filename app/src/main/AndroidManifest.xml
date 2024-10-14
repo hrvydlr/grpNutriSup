@@ -29,6 +29,7 @@
         <activity android:name=".ProfileActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".FoodSearchActivity" />
+        <activity android:name=".ImageSliderActivity" />
         <activity
             android:name=".MealPlanActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar">
