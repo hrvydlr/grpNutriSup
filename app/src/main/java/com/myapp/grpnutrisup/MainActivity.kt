@@ -1,5 +1,6 @@
 package com.myapp.grpnutrisup
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,10 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.myapp.grpnutrisup.FoodSearchActivity
+import kotlin.random.Random
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var greetingTextView: TextView
     private lateinit var caloriesValueTextView: TextView
     private lateinit var caloriesProgressBar: ProgressBar
     private lateinit var proteinValueTextView: TextView
@@ -23,11 +26,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
 
+    // List of quotes
+    private val quotes = listOf(
+        "The greatest wealth is health.",
+        "Take care of your body. It’s the only place you have to live.",
+        "Healthy citizens are the greatest asset any country can have.",
+        "You are what you eat, so don’t be fast, cheap, easy, or fake.",
+        "Health is not about the weight you lose, but about the life you gain.",
+        "Your body is your most priceless possession, take care of it."
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
         // Initialize views
+        greetingTextView = findViewById(R.id.greeting)
         caloriesValueTextView = findViewById(R.id.calories_value)
         caloriesProgressBar = findViewById(R.id.calories_progress)
         proteinValueTextView = findViewById(R.id.protein_value)
@@ -41,6 +55,9 @@ class MainActivity : AppCompatActivity() {
 
         // Fetch data from Firebase and update the UI
         fetchUserDataAndUpdateUI()
+
+        // Set a random quote in greeting TextView
+        displayRandomQuote()
 
         // Initialize the Bottom Navigation View
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -72,6 +89,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Display random quote in the greeting TextView
+    private fun displayRandomQuote() {
+        val randomIndex = Random.nextInt(quotes.size)
+        val randomQuote = quotes[randomIndex]
+        greetingTextView.text = randomQuote
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun fetchUserDataAndUpdateUI() {
         val currentUser = auth.currentUser
         currentUser?.let { user ->

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "690139926754",
+    "firebase_url": "https://nutrisuppas-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "nutrisuppas",
     "storage_bucket": "nutrisuppas.appspot.com"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.myapp.grpnutrisup"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "690139926754-f2rcu7jmu9ieuvh85be1bfmp3bdqafhu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.myapp.grpnutrisup",
+            "certificate_hash": "14b3c166592efc19ca28411d50acaf5e476c5783"
+          }
+        },
+        {
+          "client_id": "690139926754-ju2a5q8574ftcedvbk44fdst8ov8nrlu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAT-VJ0LCeoGwpuAzV3FOKkEQiqCizAQY8"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "690139926754-ju2a5q8574ftcedvbk44fdst8ov8nrlu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -2,6 +2,8 @@ package com.myapp.grpnutrisup
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -18,16 +20,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.myapp.grpnutrisup.adapters.FoodAdapter
 import com.myapp.grpnutrisup.models.Food
+import kotlinx.coroutines.*
 
 class FoodSearchActivity : AppCompatActivity() {
 
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var recyclerViewFoods: RecyclerView
     private lateinit var foodAdapter: FoodAdapter
-    private lateinit var foodList: List<Food>
+    private var foodList: List<Food> = emptyList() // Avoid late init for safe nullability
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyMessage: TextView
     private lateinit var db: FirebaseFirestore
+
+    // Debounce handler
+    private var searchJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,29 +58,7 @@ class FoodSearchActivity : AppCompatActivity() {
         }
 
         // Set up bottom navigation
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    true
-                }
-                R.id.navigation_search -> {
-                    true
-                }
-                R.id.navigation_meal -> {
-                    // Start MealPlanActivity
-                    startActivity(Intent(this, MealPlanActivity::class.java))
-                    true
-                }
-                R.id.navigation_profile -> {
-                    // Start ProfileActivity
-                    startActivity(Intent(this, ProfileActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }
+        setupBottomNavigation()
 
         // Fetch food data from Firestore
         fetchFoodData()
@@ -84,15 +68,41 @@ class FoodSearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                filterFoodList(s.toString())
+                // Use debounce logic to delay search execution
+                searchJob?.cancel()
+                searchJob = GlobalScope.launch(Dispatchers.Main) {
+                    delay(300L) // Debounce for 300ms
+                    filterFoodList(s.toString())
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
     }
 
+    private fun setupBottomNavigation() {
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigation.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    true
+                }
+                R.id.navigation_search -> true
+                R.id.navigation_meal -> {
+                    startActivity(Intent(this, MealPlanActivity::class.java))
+                    true
+                }
+                R.id.navigation_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     private fun fetchFoodData() {
-        // Show the loading spinner
         progressBar.visibility = View.VISIBLE
 
         // Fetch food items from Firestore
@@ -121,12 +131,12 @@ class FoodSearchActivity : AppCompatActivity() {
                     val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, foodNames)
                     autoCompleteTextView.setAdapter(adapter)
 
-                    // Hide empty message and loading spinner
                     emptyMessage.visibility = View.GONE
-                    progressBar.visibility = View.GONE
                 } else {
                     showEmptyMessage()
                 }
+
+                progressBar.visibility = View.GONE
             }
             .addOnFailureListener { e ->
                 progressBar.visibility = View.GONE
@@ -150,13 +160,19 @@ class FoodSearchActivity : AppCompatActivity() {
     }
 
     private fun filterFoodList(query: String) {
-        val filteredList = foodList.filter { food ->
-            food.foodName.contains(query, ignoreCase = true)
+        if (query.isNotEmpty()) {
+            val filteredList = foodList.filter { food ->
+                food.foodName.contains(query, ignoreCase = true)
+            }
+
+            foodAdapter.updateList(filteredList)
+
+            // Show or hide the empty message based on the filter result
+            emptyMessage.visibility = if (filteredList.isEmpty()) View.VISIBLE else View.GONE
+        } else {
+            // Reset the list if query is empty
+            foodAdapter.updateList(foodList)
+            emptyMessage.visibility = View.GONE
         }
-
-        // Show or hide the empty message based on the filter result
-        emptyMessage.visibility = if (filteredList.isEmpty()) View.VISIBLE else View.GONE
-
-        foodAdapter.updateList(filteredList)
     }
 }

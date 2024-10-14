@@ -50,7 +50,7 @@
                     android:text="Age:"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/textViewAge"
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
             </LinearLayout>
 
             <!-- Height -->
@@ -74,7 +74,7 @@
                     android:text="Height:"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/textViewHeight"
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
             </LinearLayout>
 
             <!-- Weight -->
@@ -98,7 +98,7 @@
                     android:text="Weight:"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/textViewWeight"
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
             </LinearLayout>
 
             <!-- Allergens -->
@@ -122,7 +122,7 @@
                     android:text="Allergens:"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/textViewAllergens"
@@ -130,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
             </LinearLayout>
 
             <!-- Goal -->
@@ -146,7 +146,7 @@
                     android:text="Goal:"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/textViewGoal"
@@ -154,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
             </LinearLayout>
 
             <!-- Weekly Weight Change -->
@@ -170,7 +170,7 @@
                     android:text="Weekly Weight Change:"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/textViewWeeklyWeightChange"
@@ -178,24 +178,43 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:padding="8dp"/>
+                    android:padding="8dp" />
             </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Change Profile Button -->
-    <Button
-        android:id="@+id/buttonChangeProfile"
+    <!-- Button Layout -->
+    <LinearLayout
+        android:id="@+id/buttonLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Change"
-        android:textColor="@android:color/white"
-        android:backgroundTint="@android:color/holo_blue_dark"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/profileCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Change Profile Button -->
+        <Button
+            android:id="@+id/buttonChangeProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:text="Change"
+            android:textColor="@android:color/white" />
+
+        <!-- Logout Button -->
+        <Button
+            android:id="@+id/buttonLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:text="Logout"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
 
 
 
