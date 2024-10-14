@@ -2,7 +2,9 @@ package com.myapp.grpnutrisup
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,6 +18,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var textViewGoal: TextView
     private lateinit var textViewWeeklyWeightChange: TextView
     private lateinit var buttonChangeProfile: Button
+    private lateinit var buttonLogout: Button  // Added Logout button
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
@@ -35,6 +38,7 @@ class ProfileActivity : AppCompatActivity() {
         textViewGoal = findViewById(R.id.textViewGoal)
         textViewWeeklyWeightChange = findViewById(R.id.textViewWeeklyWeightChange)
         buttonChangeProfile = findViewById(R.id.buttonChangeProfile)
+        buttonLogout = findViewById(R.id.buttonLogout)  // Initialize the logout button
 
         // Load user profile data
         loadProfileData()
@@ -43,6 +47,11 @@ class ProfileActivity : AppCompatActivity() {
         buttonChangeProfile.setOnClickListener {
             val intent = Intent(this, EditProfileActivity::class.java)
             startActivity(intent)
+        }
+
+        // Set click listener for "Logout" button
+        buttonLogout.setOnClickListener {
+            logoutUser()  // Handle logout
         }
     }
 
@@ -57,7 +66,7 @@ class ProfileActivity : AppCompatActivity() {
                         textViewHeight.text = document.getDouble("height")?.toString() ?: ""
                         textViewWeight.text = document.getDouble("weight")?.toString() ?: ""
 
-                        // Change here to handle allergens as a list
+                        // Handle allergens as a list
                         val allergensList = document.get("allergens") as? List<String> ?: emptyList()
                         textViewAllergens.text = allergensList.joinToString(", ") // Join list into a string
 
@@ -69,5 +78,17 @@ class ProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error loading profile: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
+    }
+
+    // Method to handle logging out
+    private fun logoutUser() {
+        auth.signOut()  // Sign out the user
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
+
+        // Redirect to the login screen (or any other starting activity)
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK  // Clear the back stack
+        startActivity(intent)
+        finish()  // Close the current activity
     }
 }

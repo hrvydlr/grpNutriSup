@@ -1,6 +1,7 @@
 package com.myapp.grpnutrisup
 
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -52,13 +53,32 @@ class EditProfileActivity : AppCompatActivity() {
         val goals = arrayOf("Maintain Weight", "Lose Weight", "Gain Weight")
         val weeklyWeightChanges = arrayOf("0.25kg", "0.5kg", "0.75kg")
 
+        // Set up the Goal spinner
         val goalAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, goals)
         goalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGoal.adapter = goalAdapter
 
+        // Set up the Weekly Weight Change spinner
         val weeklyWeightChangeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, weeklyWeightChanges)
         weeklyWeightChangeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerWeeklyWeightChange.adapter = weeklyWeightChangeAdapter
+
+        // Disable Weekly Weight Change spinner if "Maintain Weight" is selected
+        spinnerGoal.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedGoal = parent.getItemAtPosition(position).toString()
+                if (selectedGoal == "Maintain Weight") {
+                    spinnerWeeklyWeightChange.isEnabled = false // Disable spinner
+                    spinnerWeeklyWeightChange.setSelection(0)    // Optionally reset selection
+                } else {
+                    spinnerWeeklyWeightChange.isEnabled = true  // Enable spinner for other goals
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // No action needed here
+            }
+        }
     }
 
     private fun loadProfileData() {
@@ -71,7 +91,12 @@ class EditProfileActivity : AppCompatActivity() {
                         editTextAge.setText(document.getLong("age")?.toString() ?: "")
                         editTextHeight.setText(document.getDouble("height")?.toString() ?: "")
                         editTextWeight.setText(document.getDouble("weight")?.toString() ?: "")
-                        editTextAllergens.setText(document.getString("allergens") ?: "")
+
+                        // Retrieve the allergens as a list of strings
+                        val allergensList = document.get("allergens") as? List<String> ?: emptyList()
+                        // Join the list into a single string with commas
+                        val allergensString = allergensList.joinToString(", ")
+                        editTextAllergens.setText(allergensString)
 
                         // Set spinner values
                         val goal = document.getString("goal") ?: "Maintain Weight"
@@ -79,6 +104,9 @@ class EditProfileActivity : AppCompatActivity() {
 
                         val goalIndex = (spinnerGoal.adapter as ArrayAdapter<String>).getPosition(goal)
                         spinnerGoal.setSelection(goalIndex)
+
+                        // Enable or disable Weekly Weight Change based on goal
+                        spinnerWeeklyWeightChange.isEnabled = goal != "Maintain Weight"
 
                         val weeklyWeightChangeIndex = when (weeklyWeightChange) {
                             0.25 -> 0
@@ -102,7 +130,10 @@ class EditProfileActivity : AppCompatActivity() {
             val age = editTextAge.text.toString().toIntOrNull() ?: 0
             val height = editTextHeight.text.toString().toDoubleOrNull() ?: 0.0
             val weight = editTextWeight.text.toString().toDoubleOrNull() ?: 0.0
-            val allergens = editTextAllergens.text.toString()
+
+            // Convert the allergens string back to a list of strings
+            val allergensString = editTextAllergens.text.toString()
+            val allergensList = allergensString.split(",").map { it.trim() }
 
             val goal = spinnerGoal.selectedItem.toString()
             val weeklyWeightChange = when (spinnerWeeklyWeightChange.selectedItem.toString()) {
@@ -116,9 +147,9 @@ class EditProfileActivity : AppCompatActivity() {
                 "age" to age,
                 "height" to height,
                 "weight" to weight,
-                "allergens" to allergens,
+                "allergens" to allergensList, // Save as a list
                 "goal" to goal,
-                "weeklyWeightChange" to weeklyWeightChange
+                "weeklyWeightChange" to if (goal != "Maintain Weight") weeklyWeightChange else 0.0
             )
 
             // Save profile data to Firestore

@@ -60,7 +60,7 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/buttonLogin"
         android:layout_marginTop="16dp"
-        android:backgroundTint= "@color/white"
+        android:backgroundTint= "#F4D35E"
         android:textColor="@color/black"/>
     </LinearLayout>
 </RelativeLayout>
