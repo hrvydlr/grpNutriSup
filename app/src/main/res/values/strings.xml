@@ -6,4 +6,15 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_goal">Select Goal</string>
     <string name="prompt_weekly_weight_change">Select Weekly Weight Change</string>
+
+        <string name="activity_level_prompt">Select Activity Level</string>
+
+        <string-array name="activity_levels">
+            <item>Sedentary (little or no exercise)</item>
+            <item>Lightly Active (light exercise/sports 1-3 days/week)</item>
+            <item>Moderately Active (moderate exercise/sports 3-5 days/week)</item>
+            <item>Very Active (hard exercise/sports 6-7 days a week)</item>
+            <item>Extra Active (very hard exercise/physical job)</item>
+        </string-array>
+
 </resources>
