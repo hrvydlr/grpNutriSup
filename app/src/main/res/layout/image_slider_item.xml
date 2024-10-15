@@ -10,4 +10,5 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:contentDescription="Image slider" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
