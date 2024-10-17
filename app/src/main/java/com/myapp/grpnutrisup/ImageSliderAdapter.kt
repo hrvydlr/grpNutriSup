@@ -1,3 +1,4 @@
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +14,12 @@ class ImageSliderAdapter(private val images: List<Int>) : RecyclerView.Adapter<I
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
+        Log.d("ImageSliderAdapter", "Binding image at position: $position") // Log binding action
         holder.bind(images[position])
     }
 
     override fun getItemCount(): Int {
+        Log.d("ImageSliderAdapter", "Total images: ${images.size}") // Log item count
         return images.size
     }
 

@@ -35,8 +35,6 @@
             android:id="@+id/imageSlider"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/sample_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,8 +59,10 @@
         app:layout_constraintVertical_bias=".38" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView1"
         android:layout_width="167dp"
         android:layout_height="116dp"
+        android:layout_marginEnd="8dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -82,6 +82,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
         android:layout_width="167dp"
         android:layout_height="116dp"
         app:cardCornerRadius="15dp"
@@ -91,7 +92,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias=".48"
-        app:layout_constraintHorizontal_bias=".8">
+        app:layout_constraintHorizontal_bias=".8"
+        android:layout_marginStart="8dp">
 
         <ImageView
             android:id="@+id/favorite_image2"
@@ -103,6 +105,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView3"
         android:layout_width="167dp"
         android:layout_height="116dp"
         app:cardCornerRadius="15dp"
@@ -154,7 +157,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
+        android:id="@+id/cardView4"
         android:layout_width="370dp"
         android:layout_height="170dp"
         app:cardCornerRadius="12dp"
