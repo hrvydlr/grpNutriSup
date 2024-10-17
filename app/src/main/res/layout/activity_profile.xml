@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFF8E3"
     tools:context=".ProfileActivity"
     android:padding="16dp">
 
@@ -16,7 +17,7 @@
         android:layout_margin="16dp"
         android:padding="16dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="6dp"
+        app:cardElevation="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -191,29 +192,29 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/profileCard"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
 
-        <!-- Change Profile Button -->
-        <Button
-            android:id="@+id/buttonChangeProfile"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="8dp"
-            android:backgroundTint="@android:color/holo_blue_dark"
-            android:text="Change"
-            android:textColor="@android:color/white" />
+    <!-- Change Profile Button -->
+    <Button
+        android:id="@+id/buttonChangeProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:backgroundTint="#57BF2A"
+        android:text="Edit Profile"
+        android:textColor="@android:color/white" />
 
-        <!-- Logout Button -->
-        <Button
-            android:id="@+id/buttonLogout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:backgroundTint="@android:color/holo_blue_dark"
-            android:text="Logout"
-            android:textColor="@android:color/white" />
-    </LinearLayout>
+    <!-- Logout Button -->
+    <Button
+        android:id="@+id/buttonLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#57BF2A"
+        android:text="Logout"
+        android:textColor="@android:color/white" />
+</LinearLayout>
 
     <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

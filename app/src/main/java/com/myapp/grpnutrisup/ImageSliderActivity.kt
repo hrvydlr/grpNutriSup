@@ -11,7 +11,7 @@ class ImageSliderActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var handler: Handler
-    private var imageList = listOf(R.drawable.sample_image, R.drawable.image_slider2, R.drawable.image_slider3, R.drawable.image_slider4) // Your images here
+    private var imageList = listOf(R.drawable.image_slider2, R.drawable.image_slider3, R.drawable.image_slider4) // Your images here
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +24,7 @@ class ImageSliderActivity : AppCompatActivity() {
         viewPager.adapter = ImageSliderAdapter(imageList)
 
         // Optional: Auto-scroll every few seconds
-        autoScroll()
+        //autoScroll()
     }
 
     private fun autoScroll() {
