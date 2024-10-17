@@ -1,13 +1,15 @@
 package com.myapp.grpnutrisup
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlin.math.roundToInt
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -24,6 +26,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private var gender: String = "male"  // Default to male, but this will be fetched from Firestore
+    private lateinit var loadingDialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +47,9 @@ class EditProfileActivity : AppCompatActivity() {
         spinnerActivityLevel = findViewById(R.id.spinnerActivityLevel)  // New spinner for activity level
         buttonSaveProfile = findViewById(R.id.buttonSaveProfile)
 
+        // Set up the loading dialog
+        setupLoadingDialog()
+
         // Populate spinners with goal and weekly weight change options
         setupSpinners()
 
@@ -54,6 +60,12 @@ class EditProfileActivity : AppCompatActivity() {
         buttonSaveProfile.setOnClickListener {
             saveProfileData()
         }
+    }
+
+    private fun setupLoadingDialog() {
+        loadingDialog = Dialog(this)
+        loadingDialog.setContentView(R.layout.dialog_loading) // Use your custom loading layout
+        loadingDialog.setCancelable(false) // Prevent dismissing by clicking outside
     }
 
     private fun setupSpinners() {
@@ -202,72 +214,73 @@ class EditProfileActivity : AppCompatActivity() {
                 "gender" to gender,
                 "BMR" to bmr,  // Save BMR
                 "TDEE" to tdee, // Save TDEE
-                "calorieResult" to adjustedCalories, // Save adjusted calorie intake
+                "calorieResult" to adjustedCalories, // Save adjusted calorie result
                 "weightGoal" to weightGoal // Save weight goal
             )
 
-            // Update the user profile in Firestore
+            // Show loading dialog
+            loadingDialog.show()
+
+            // Update Firestore
             db.collection("users").document(userEmail)
                 .update(profileData)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show()
-                    // After successful save, go back to the ProfileActivity
-                    goToProfileActivity()
+                    // Send broadcast to notify other parts of the app
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(Intent("profile_updated"))
+
+                    // Delay before navigating back to ProfileActivity
+                    Handler().postDelayed({
+                        loadingDialog.dismiss() // Dismiss the loading dialog
+                        goToProfileActivity()
+                    }, 2000) // 2000 milliseconds delay (2 seconds)
                 }
                 .addOnFailureListener { e ->
+                    loadingDialog.dismiss() // Dismiss the loading dialog
                     Toast.makeText(this, "Error saving profile: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
 
     private fun goToProfileActivity() {
-        // Create an intent to navigate back to ProfileActivity
         val intent = Intent(this, ProfileActivity::class.java)
-        // Set flags to clear the current task and start the new activity fresh
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
-        // Finish the current EditProfileActivity to prevent going back to it
-        finish()
+        finish() // Optionally finish the EditProfileActivity
     }
 
     private fun calculateBMR(age: Int, height: Double, weight: Double, gender: String): Double {
         return if (gender == "male") {
-            (10 * weight) + (6.25 * height) - (5 * age) + 5  // BMR formula for males
+            66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age)
         } else {
-            (10 * weight) + (6.25 * height) - (5 * age) - 161  // BMR formula for females
+            655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
         }
     }
 
-    // TDEE calculation function (provided in the prompt)
     private fun calculateTDEE(bmr: Double, activityLevel: String): Double {
-        return when (activityLevel) {
-            "Sedentary (little or no exercise)" -> bmr * 1.2
-            "Lightly Active (light exercise/sports 1-3 days/week)" -> bmr * 1.375
-            "Moderately Active (moderate exercise/sports 3-5 days/week)" -> bmr * 1.55
-            "Very Active (hard exercise/sports 6-7 days a week)" -> bmr * 1.725
-            "Extra Active (very hard exercise/physical job)" -> bmr * 1.9
-            else -> bmr * 1.2 // Default to Sedentary if activity level is unknown
+        val activityMultiplier = when (activityLevel) {
+            "Sedentary (little or no exercise)" -> 1.2
+            "Lightly Active (light exercise/sports 1-3 days/week)" -> 1.375
+            "Moderately Active (moderate exercise/sports 3-5 days/week)" -> 1.55
+            "Very Active (hard exercise/sports 6-7 days a week)" -> 1.725
+            "Extra Active (very hard exercise/physical job)" -> 1.9
+            else -> 1.2
         }
+        return bmr * activityMultiplier
     }
 
-    // Adjust calories based on weight goal (weekly weight change)
-    private fun adjustCaloriesForGoal(tdee: Double, currentWeight: Double, desiredWeight: Double, weeklyWeightChange: Double): Int {
-        val dailyCalorieAdjustment: Double
-
-        // If user wants to lose weight
-        if (desiredWeight < currentWeight) {
-            // Caloric deficit for weight loss (7700 kcal = 1kg of body weight)
-            dailyCalorieAdjustment = (7700 * weeklyWeightChange) / 7
-            return (tdee - dailyCalorieAdjustment).roundToInt()
-        }
-        // If user wants to gain weight
-        else if (desiredWeight > currentWeight) {
-            // Caloric surplus for weight gain (7700 kcal = 1kg of body weight)
-            dailyCalorieAdjustment = (7700 * weeklyWeightChange) / 7
-            return (tdee + dailyCalorieAdjustment).roundToInt()
+    private fun adjustCaloriesForGoal(tdee: Double, weight: Double, weightGoal: Double, weeklyWeightChange: Double): Double {
+        val calorieDeficit = when (weeklyWeightChange) {
+            0.25 -> 250
+            0.5 -> 500
+            0.75 -> 750
+            else -> 0
         }
 
-        // If the user wants to maintain weight
-        return tdee.roundToInt()
+        // If the goal is to lose weight, subtract the deficit
+        return if (weightGoal < weight) {
+            tdee - calorieDeficit
+        } else {
+            tdee + calorieDeficit // If the goal is to gain weight, add the surplus
+        }
     }
 }

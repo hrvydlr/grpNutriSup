@@ -1,15 +1,16 @@
 package com.myapp.grpnutrisup.models
 
 data class Food(
-    val calories: Int ,
-    val carbohydrates: String,
-    val description: String ,
-    val fats: Int ,
-    val fiber: String ,
-    val foodName: String,
-    val goal: String,
-    val mealType: String,
-    val proteins: Int,
-    val servingSize: String,
-    val allergens: String
+    var food_name: String = "",       // Match Firestore field
+    var food_desc: String = "",       // Match Firestore field
+    var calories: Int = 0,
+    var carbohydrate: Int = 0,
+    var fat: Int = 0,                 // Match Firestore field
+    var fiber: Int = 0,
+    var proteins: Int = 0,
+    var serving_size: String = "",    // Match Firestore field
+    var goal_type: String = "",       // Match Firestore field
+    var meal_type: String = "",       // Match Firestore field
+    var allergens: String = "",
+    var imageUrl: String = ""
 )

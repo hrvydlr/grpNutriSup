@@ -13,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.random.Random
 
 @Suppress("DEPRECATION")
-class MainActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
 
     private lateinit var greetingTextView: TextView
     private lateinit var caloriesValueTextView: TextView
@@ -45,9 +45,7 @@ class MainActivity : AppCompatActivity() {
         caloriesValueTextView = findViewById(R.id.calories_value)
         caloriesProgressBar = findViewById(R.id.calories_progress)
         proteinValueTextView = findViewById(R.id.protein_value)
-        proteinProgressBar = findViewById(R.id.protein_progress)
         fatsValueTextView = findViewById(R.id.fats_value)
-        fatsProgressBar = findViewById(R.id.fats_progress)
 
         // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance()
@@ -76,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_meal -> {
                     // Start MealPlanActivity
-                    startActivity(Intent(this, MealPlanActivity::class.java))
+                    startActivity(Intent(this, MealActivity::class.java))
                     true
                 }
                 R.id.navigation_profile -> {
@@ -109,26 +107,21 @@ class MainActivity : AppCompatActivity() {
                     .addOnSuccessListener { document ->
                         if (document != null && document.exists()) {
                             val calorieGoal = document.getLong("calorieResult")?.toInt() ?: 2000
-                            val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 600
+                            val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 0
 
                             // Update UI
                             caloriesValueTextView.text = "$calorieIntake/$calorieGoal"
                             caloriesProgressBar.max = calorieGoal
                             caloriesProgressBar.progress = calorieIntake
 
-                            val proteinIntake = document.getLong("proteinIntake")?.toInt() ?: 150
-                            val proteinGoal = document.getLong("proteinGoal")?.toInt() ?: 800
-                            val fatsIntake = document.getLong("fatsIntake")?.toInt() ?: 90
-                            val fatsGoal = document.getLong("fatsGoal")?.toInt() ?: 500
+                            val proteinIntake = document.getLong("proteinIntake")?.toInt() ?: 0
+                            val fatsIntake = document.getLong("fatIntake")?.toInt() ?: 0
 
                             // Update protein and fats UI
-                            proteinValueTextView.text = "$proteinIntake/$proteinGoal"
-                            proteinProgressBar.max = proteinGoal
-                            proteinProgressBar.progress = proteinIntake
+                            proteinValueTextView.text = "$proteinIntake"
 
-                            fatsValueTextView.text = "$fatsIntake/$fatsGoal"
-                            fatsProgressBar.max = fatsGoal
-                            fatsProgressBar.progress = fatsIntake
+                            fatsValueTextView.text = "$fatsIntake"
+
                         } else {
                             Log.d("MainActivity", "No such document")
                         }
