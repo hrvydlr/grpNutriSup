@@ -156,7 +156,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
         android:layout_width="370dp"
-        android:layout_height="218dp"
+        android:layout_height="170dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -234,21 +234,12 @@
                     android:id="@+id/protein_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="200/500"
+                    android:text="0"
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- Protein Progress Bar -->
-            <ProgressBar
-                android:id="@+id/protein_progress"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:max="500"
-                android:min="0"
-                android:progress="200"
-                android:progressDrawable="@drawable/custom_progressbar" />
+
 
             <!-- Fats Section -->
             <LinearLayout
@@ -273,21 +264,10 @@
                     android:id="@+id/fats_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="200/500"
+                    android:text="0"
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
             </LinearLayout>
-
-            <!-- Fats Progress Bar -->
-            <ProgressBar
-                android:id="@+id/fats_progress"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:max="500"
-                android:min="0"
-                android:progress="200"
-                android:progressDrawable="@drawable/custom_progressbar" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

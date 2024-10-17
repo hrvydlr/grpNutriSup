@@ -57,7 +57,7 @@ class FoodSearchActivity : AppCompatActivity() {
             emptyMessage.visibility = View.GONE
         }
 
-        // Set up bottom navigation
+        // Set up bottom navigation and set selected item to search
         setupBottomNavigation()
 
         // Fetch food data from Firestore
@@ -82,15 +82,17 @@ class FoodSearchActivity : AppCompatActivity() {
 
     private fun setupBottomNavigation() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.bottom_navigation)
+        // Set the selected item to the search navigation item
+        bottomNavigation.selectedItemId = R.id.navigation_search
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this, HomeActivity::class.java))
                     true
                 }
-                R.id.navigation_search -> true
+                R.id.navigation_search -> true // This activity is for searching, no action needed
                 R.id.navigation_meal -> {
-                    startActivity(Intent(this, MealPlanActivity::class.java))
+                    startActivity(Intent(this, MealActivity::class.java))
                     true
                 }
                 R.id.navigation_profile -> {
@@ -111,23 +113,24 @@ class FoodSearchActivity : AppCompatActivity() {
                 if (!documents.isEmpty) {
                     foodList = documents.map { doc ->
                         Food(
-                            foodName = doc.getString("food_name") ?: "",
-                            description = doc.getString("food_desc") ?: "",
+                            food_name = doc.getString("food_name") ?: "",
+                            food_desc = doc.getString("food_desc") ?: "",
                             calories = doc.getLong("calories")?.toInt() ?: 0,
-                            carbohydrates = doc.getString("carbohydrates") ?: "",
-                            fats = doc.getLong("fat")?.toInt() ?: 0,
-                            fiber = doc.getString("fiber") ?: "",
-                            proteins = doc.getLong("protien")?.toInt() ?: 0,
-                            servingSize = doc.getString("serving_size") ?: "",
-                            goal = doc.getString("goal_type") ?: "",
-                            mealType = doc.getString("meal_type") ?: "",
-                            allergens = doc.getString("allergens") ?: ""
+                            carbohydrate = doc.getLong("carbohydrate")?.toInt() ?: 0,
+                            fat = doc.getLong("fat")?.toInt() ?: 0,
+                            fiber = doc.getLong("fiber")?.toInt() ?: 0,
+                            proteins = doc.getLong("proteins")?.toInt() ?: 0,
+                            serving_size = doc.getString("serving_size") ?: "",
+                            goal_type = doc.getString("goal_type") ?: "",
+                            meal_type = doc.getString("meal_type") ?: "",
+                            allergens = doc.getString("allergens") ?: "",
+                            imageUrl = doc.getString("imageUrl") ?: "" // Fetch image URL
                         )
                     }
                     updateRecyclerView()
 
                     // Set up the AutoCompleteTextView with food names
-                    val foodNames = foodList.map { it.foodName }
+                    val foodNames = foodList.map { it.food_name }
                     val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, foodNames)
                     autoCompleteTextView.setAdapter(adapter)
 
@@ -162,7 +165,7 @@ class FoodSearchActivity : AppCompatActivity() {
     private fun filterFoodList(query: String) {
         if (query.isNotEmpty()) {
             val filteredList = foodList.filter { food ->
-                food.foodName.contains(query, ignoreCase = true)
+                food.food_name.contains(query, ignoreCase = true)
             }
 
             foodAdapter.updateList(filteredList)

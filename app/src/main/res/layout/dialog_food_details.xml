@@ -1,0 +1,85 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/dialogFoodImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/dialogFoodNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Food Name"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_below="@id/dialogFoodImageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/dialogFoodDescriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Food Description"
+        android:layout_below="@id/dialogFoodNameTextView"
+        android:layout_marginBottom="8dp"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/dialogFoodCaloriesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calories"
+        android:layout_below="@id/dialogFoodDescriptionTextView"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/dialogFoodCarbsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Carbohydrates"
+        android:layout_below="@id/dialogFoodCaloriesTextView"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/dialogFoodProteinsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Proteins"
+        android:layout_below="@id/dialogFoodCarbsTextView"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/dialogFoodFatsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fats"
+        android:layout_below="@id/dialogFoodProteinsTextView"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/dialogFoodAllergenTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Allergens"
+        android:layout_below="@id/dialogFoodFatsTextView"
+        android:textSize="14sp" />
+
+    <!-- Added Button for 'Eaten' functionality -->
+    <Button
+        android:id="@+id/dialogFoodEatenButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Eaten"
+        android:layout_below="@id/dialogFoodAllergenTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp" />
+
+</RelativeLayout>

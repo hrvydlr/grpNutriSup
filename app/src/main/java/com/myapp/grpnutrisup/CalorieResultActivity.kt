@@ -39,7 +39,7 @@ class CalorieResultActivity : AppCompatActivity() {
         // Set click listener for the "Next" button
         buttonNext.setOnClickListener {
             // Navigate to MainActivity
-            val intent = Intent(this@CalorieResultActivity, MainActivity::class.java)
+            val intent = Intent(this@CalorieResultActivity, HomeActivity::class.java)
             startActivity(intent)
             finish() // Optionally, close the current activity to prevent returning to it
         }

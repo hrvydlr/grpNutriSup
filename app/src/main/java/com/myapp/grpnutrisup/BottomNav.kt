@@ -1,41 +1,43 @@
 package com.myapp.grpnutrisup
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.MenuInflater
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.ActionMenuView
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 class BottomNav : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)  // Change this to activity_home
+        setContentView(R.layout.activity_home) // Your main layout with BottomNavigationView
 
-        // Find the ActionMenuView
-        val actionMenuView: ActionMenuView = findViewById(R.id.bottom_navigation)
+        // Initialize BottomNavigationView
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation)
 
-        // Manually inflate the menu
-        val menuInflater: MenuInflater = MenuInflater(this)
-        menuInflater.inflate(R.menu.bottom_navigation_menu, actionMenuView.menu)
+        // Load the default activity on startup (if applicable)
+        if (savedInstanceState == null) {
+            // Optionally start the HomeActivity as the default activity
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
 
-        // Handle click events
-        actionMenuView.setOnMenuItemClickListener { menuItem: MenuItem ->
+        // Set item selected listener for BottomNavigationView
+        bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.navigation_home -> {
-                    // Handle Home click
+                    startActivity(Intent(this, HomeActivity::class.java)) // Start Home activity
                     true
                 }
                 R.id.navigation_search -> {
-                    // Handle Search click
+                    startActivity(Intent(this, FoodSearchActivity::class.java)) // Start Search activity
                     true
                 }
                 R.id.navigation_meal -> {
-                    // Handle Meal click
+                    startActivity(Intent(this, MealActivity::class.java)) // Start Meal Plan activity
                     true
                 }
                 R.id.navigation_profile -> {
-                    // Handle Profile click
+                    startActivity(Intent(this, ProfileActivity::class.java)) // Start Profile activity
                     true
                 }
                 else -> false

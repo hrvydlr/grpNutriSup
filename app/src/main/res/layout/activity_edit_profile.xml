@@ -67,6 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0" />
 
+    <!-- Spinner for Activity Level -->
     <Spinner
         android:id="@+id/spinnerActivityLevel"
         android:layout_width="0dp"
@@ -93,6 +94,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0" />
 
+    <!-- EditText for Weight Goal -->
     <EditText
         android:id="@+id/editTextWeightGoal"
         android:hint="Enter your weight goal"
@@ -106,8 +108,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0" />
-
-
 
     <!-- Spinner for Weekly Weight Change -->
     <Spinner
@@ -134,5 +134,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0" />
+
+    <!-- Loading TextView -->
+    <TextView
+        android:id="@+id/loadingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Re-calculating and updating..."
+        android:visibility="gone"
+        android:layout_gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSaveProfile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginTop="24dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
