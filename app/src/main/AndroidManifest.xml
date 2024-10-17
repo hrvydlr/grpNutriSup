@@ -14,13 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GrpNutriSup">
 
-        <!-- Activities -->
         <activity
-            android:name=".SignupActivity"
+            android:name=".LoginActivity"
             android:exported="false"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.GrpNutriSup" />
-
         <activity android:name=".HealthComplicationActivity" />
         <activity android:name=".GoalSelectionActivity" />
         <activity android:name=".CalorieResultActivity" />
@@ -31,24 +29,27 @@
         <activity android:name=".ProfileActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".FoodSearchActivity" />
-
-        <!-- MealPlanActivity added here -->
-        <activity android:name=".MealActivity" />
-
+        <activity android:name=".ImageSliderActivity" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".MealPlanActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar">
+        </activity>
+
+
+
+        <!-- MainActivity and other activities -->
+        <activity
+            android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.GrpNutriSup" />
-
         <activity
             android:name=".UserCollectionActivity"
             android:exported="false"
             android:label="@string/title_activity_user_details"
             android:theme="@style/Theme.GrpNutriSup" />
-
         <activity
-            android:name=".LoginActivity"
+            android:name=".SignupActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
