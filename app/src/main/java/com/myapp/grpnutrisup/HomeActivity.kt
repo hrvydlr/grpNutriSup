@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -27,6 +28,8 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+
+    private var hasHealthComplication = false // Track health complication status
 
     private val quotes = listOf(
         "The greatest wealth is health.",
@@ -51,7 +54,7 @@ class HomeActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        fetchUserDataAndUpdateUI()
+        fetchUserDataAndUpdateUI() // Fetch data first to update UI and check health status
         displayRandomQuote()
         setupBottomNavigation()
         scheduleDailyIntakeReset()
@@ -66,7 +69,14 @@ class HomeActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_meal -> {
-                    startActivity(Intent(this, MealActivity::class.java))
+                    // Check for health complication
+                    if (hasHealthComplication) {
+                        // Show dialog if user has a health complication
+                        showHealthComplicationDialog()
+                    } else {
+                        // Otherwise, start MealActivity
+                        startActivity(Intent(this, MealActivity::class.java))
+                    }
                     true
                 }
                 R.id.navigation_profile -> {
@@ -107,12 +117,10 @@ class HomeActivity : AppCompatActivity() {
                             proteinValueTextView.text = "$proteinIntake"
                             fatsValueTextView.text = "$fatsIntake"
 
-                            // Check health complication status
-                            if (document.getString("healthComp") == "yes") {
-                                bottomNavigation.menu.findItem(R.id.navigation_meal).isEnabled = false
-                                // Optionally provide a warning to the user
-                                // showHealthComplicationDialog() // Uncomment to show a dialog if necessary
-                            }
+                            // Check health complication status and update flag
+                            val healthCompStatus = document.getString("healthComp") ?: "no"
+                            hasHealthComplication = (healthCompStatus == "yes")
+
                         } else {
                             Log.d("HomeActivity", "No such document")
                         }
@@ -154,6 +162,26 @@ class HomeActivity : AppCompatActivity() {
 
         return targetTime.timeInMillis - currentTime.timeInMillis
     }
+
+    // Function to show health complication dialog
+    private fun showHealthComplicationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Health Advisory")
+        builder.setMessage("You have reported a health complication. Please consult a healthcare professional for personalized meal plans.")
+
+        // Set the dialog to require OK click
+        builder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        // Disable canceling the dialog by tapping outside or pressing the back button
+        val dialog = builder.create()
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
+
+        dialog.show()
+    }
+
 }
 
 // Worker class to reset calorie, protein, and fats intake
