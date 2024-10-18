@@ -31,9 +31,7 @@
         <activity android:name=".FoodSearchActivity" />
         <activity android:name=".ImageSliderActivity" />
         <activity
-            android:name=".MealActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar">
-        </activity>
+            android:name=".MealActivity"/>
 
 
 

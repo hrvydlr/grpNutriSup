@@ -1,72 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-    <LinearLayout
+    android:layout_height="match_parent">
+
+    <!-- ScrollView for content that may overflow -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_above="@id/progressBar"
+        android:padding="16dp">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/logo"
-        android:layout_marginTop="20dp"/>
-    <RadioGroup
-        android:id="@+id/radioGroupActivityLevel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <RadioButton
-            android:id="@+id/radioSedentary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sedentary" />
-
-        <RadioButton
-            android:id="@+id/radioLightlyActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lightly active" />
-
-        <RadioButton
-            android:id="@+id/radioModeratelyActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Moderately active" />
-
-        <RadioButton
-            android:id="@+id/radioVeryActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Very active" />
-
-        <RadioButton
-            android:id="@+id/radioSuperActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Super active" />
-
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/buttonSubmit"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:backgroundTint="#57BF2A"/>
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="100"
-            android:progress="80"
-            android:layout_marginTop="152sp"
-            android:layout_marginBottom="8dp" />
-    </LinearLayout>
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!-- Logo Image -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo"
+                android:layout_marginTop="20dp" />
+
+            <!-- Question Text -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How active are you in your daily life?"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center" />
+
+            <!-- Activity Level Radio Group with Descriptions -->
+            <RadioGroup
+                android:id="@+id/radioGroupActivityLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="16dp">
+
+                <!-- Sedentary Option -->
+                <RadioButton
+                    android:id="@+id/radioSedentary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sedentary (little or no exercise)" />
+
+                <!-- Lightly Active Option -->
+                <RadioButton
+                    android:id="@+id/radioLightlyActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lightly Active (light exercise/sports 1-3 days/week)" />
+
+                <!-- Moderately Active Option -->
+                <RadioButton
+                    android:id="@+id/radioModeratelyActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Moderately Active (moderate exercise/sports 3-5 days/week)" />
+
+                <!-- Very Active Option -->
+                <RadioButton
+                    android:id="@+id/radioVeryActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Very Active (hard exercise/sports 6-7 days/week)" />
+
+                <!-- Super Active Option -->
+                <RadioButton
+                    android:id="@+id/radioSuperActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Extra Active (very hard exercise/physical job)" />
+            </RadioGroup>
+
+            <!-- Submit and Back Button in a horizontal layout -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <Button
+                    android:id="@+id/buttonBack"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:layout_alignParentStart="true"
+                    android:backgroundTint="#FF5722"/>
+
+                <Button
+                    android:id="@+id/buttonSubmit"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="Submit"
+                    android:layout_marginLeft="130dp"
+                    android:backgroundTint="#57BF2A"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Progress Bar anchored at the bottom -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="50"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp" />
+
 </RelativeLayout>

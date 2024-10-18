@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -26,6 +27,8 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var buttonLogout: Button
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+
+    private var hasHealthComplication: Boolean = false // Track health complication status
 
     private val profileUpdateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -53,6 +56,9 @@ class ProfileActivity : AppCompatActivity() {
 
         // Load user profile data
         loadProfileData()
+
+        // Fetch user health complication status
+        checkHealthComplication()
 
         // Set click listeners for buttons
         buttonChangeProfile.setOnClickListener {
@@ -108,6 +114,33 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    // Method to check if user has health complications
+    private fun checkHealthComplication() {
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            return
+        }
+
+        val userEmail = currentUser.email ?: return
+        db.collection("users").document(userEmail).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val healthComp = document.getString("healthComp") ?: "no"
+                    hasHealthComplication = healthComp.equals("yes", ignoreCase = true)
+
+                    // Setup bottom navigation after fetching health complication status
+                    setupBottomNavigation()
+                } else {
+                    // Proceed with default behavior if no user data is found
+                    setupBottomNavigation()
+                }
+            }
+            .addOnFailureListener {
+                // Proceed with default behavior in case of failure
+                setupBottomNavigation()
+            }
+    }
+
     // Method to handle logging out
     private fun logoutUser() {
         auth.signOut()  // Sign out the user
@@ -134,8 +167,14 @@ class ProfileActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_meal -> {
-                    navigateTo(MealActivity::class.java)
-                    true
+                    if (hasHealthComplication) {
+                        // Show the dialog message and prevent access to MealActivity
+                        showHealthComplicationDialog()
+                        false // Prevent navigation to MealActivity
+                    } else {
+                        navigateTo(MealActivity::class.java)
+                        true
+                    }
                 }
                 R.id.navigation_profile -> {
                     // Already in ProfileActivity, do nothing
@@ -144,6 +183,16 @@ class ProfileActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    private fun showHealthComplicationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Health Advisory")
+        builder.setMessage("You have reported a health complication. Please consult a healthcare professional for personalized meal plans.")
+        builder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
     }
 
     private fun navigateTo(destination: Class<*>) {

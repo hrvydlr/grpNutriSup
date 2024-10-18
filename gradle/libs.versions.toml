@@ -1,5 +1,14 @@
 [versions]
 agp = "8.6.0"
+constraintlayoutCompose = "1.1.0-beta01"
+constraintlayoutVersion = "2.2.0-beta01"
+firebaseAuth = "23.0.0"
+firebaseAuthKtx = "23.0.0"
+firebaseBom = "33.3.0"
+firebaseFirestore = "24.7.1"
+firebaseFirestoreKtx = "25.1.0"
+firebaseStorage = "20.3.0" # Add Firebase Storage version here
+imageslideshow = "0.1.2"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -17,9 +26,19 @@ retrofit = "2.9.0"
 gson = "2.9.0"
 okhttp = "4.9.3"
 
-
 [libraries]
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
+androidx-constraintlayout-v220beta01 = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayoutVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+firebase-storage = { module = "com.google.firebase:firebase-storage-ktx", version.ref = "firebaseStorage" } # Include Firebase Storage
+google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+imageslideshow = { module = "com.github.denzcoskun:ImageSlideshow", version.ref = "imageslideshow" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -47,4 +66,3 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.0.20" }
 
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-

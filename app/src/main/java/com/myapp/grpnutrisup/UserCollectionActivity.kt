@@ -1,6 +1,7 @@
 package com.myapp.grpnutrisup
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -15,18 +16,23 @@ class UserCollectionActivity : AppCompatActivity() {
     private lateinit var editTextHeight: EditText
     private lateinit var editTextWeight: EditText
     private lateinit var buttonSubmit: Button
+    private lateinit var buttonBack: Button
     private lateinit var progressBar: ProgressBar
 
     // Firebase Firestore and Auth instances
     private val db = FirebaseFirestore.getInstance()
     private lateinit var auth: FirebaseAuth
 
+    // SharedPreferences for saving user details temporarily
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_details)
 
-        // Initialize FirebaseAuth
+        // Initialize FirebaseAuth and SharedPreferences
         auth = FirebaseAuth.getInstance()
+        sharedPreferences = getSharedPreferences("UserDetails", MODE_PRIVATE)
 
         // Initialize views
         editTextAge = findViewById(R.id.editTextAge)
@@ -34,14 +40,50 @@ class UserCollectionActivity : AppCompatActivity() {
         editTextHeight = findViewById(R.id.editTextHeight)
         editTextWeight = findViewById(R.id.editTextWeight)
         buttonSubmit = findViewById(R.id.buttonSubmit)
+        buttonBack = findViewById(R.id.buttonBack)
         progressBar = findViewById(R.id.progressBar)
 
-        // Hide progress bar initially
-        progressBar.visibility = View.GONE
+        // Set progress bar visibility
+        progressBar.visibility = View.VISIBLE // Always show progress bar
 
+        // Update progress bar for the current activity
+        updateProgressBar(1) // UserCollection is the 1st page
+
+        // Restore input data
+        restoreInputData()
+
+        // Submit button click listener
         buttonSubmit.setOnClickListener {
-            // Perform validation and save user details
             saveUserDetails()
+        }
+    }
+
+    private fun updateProgressBar(currentPageIndex: Int) {
+        val totalPages = 6 // Total number of pages
+        val progress = (currentPageIndex.toFloat() / totalPages) * 100
+        progressBar.progress = progress.toInt()
+    }
+
+    private fun saveInputData() {
+        val editor = sharedPreferences.edit()
+        editor.putString("age", editTextAge.text.toString())
+        editor.putString("height", editTextHeight.text.toString())
+        editor.putString("weight", editTextWeight.text.toString())
+        editor.putInt("gender", radioGroupGender.checkedRadioButtonId)
+        editor.apply()
+    }
+
+    private fun restoreInputData() {
+        val age = sharedPreferences.getString("age", "")
+        val height = sharedPreferences.getString("height", "")
+        val weight = sharedPreferences.getString("weight", "")
+        val genderId = sharedPreferences.getInt("gender", -1)
+
+        editTextAge.setText(age)
+        editTextHeight.setText(height)
+        editTextWeight.setText(weight)
+        if (genderId != -1) {
+            radioGroupGender.check(genderId)
         }
     }
 

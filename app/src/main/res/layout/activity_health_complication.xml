@@ -1,57 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
+
+    <!-- ScrollView to make content scrollable if it overflows -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/progressBar"
+        android:padding="16dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/logo"
-        android:layout_marginTop="20dp"/>
-    <TextView
-        android:id="@+id/textViewQuestion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Do you have any health complications?"
-        android:textSize="18sp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            android:layout_marginTop="20dp"/>
 
-    <Button
-        android:id="@+id/buttonYes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Yes"
-        android:layout_below="@id/textViewQuestion"
-        android:layout_marginTop="20dp"
-        android:layout_toStartOf="@+id/buttonNo"
-        android:backgroundTint="#57BF2A"/>
+        <TextView
+            android:id="@+id/textViewQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Do you have any health complications?"
+            android:textSize="18sp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center" />  <!-- Center horizontally -->
 
-    <Button
-        android:id="@+id/buttonNo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No"
-        android:layout_below="@id/textViewQuestion"
-        android:layout_marginTop="20dp"
-        android:layout_toEndOf="@+id/buttonYes"
-        android:backgroundTint="#57BF2A"
-        />
-        <ProgressBar
+        <Button
+            android:id="@+id/buttonYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#57BF2A"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/buttonNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#57BF2A"
+            android:layout_gravity="center"/>  <!-- Align to end (right) -->
+
+    </LinearLayout>
+</ScrollView>
+
+    <!-- ProgressBar fixed to the bottom of the screen -->
+            <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:progress="40"
-            android:layout_marginTop="250sp"
+            android:progress="16"
+            android:layout_alignParentBottom="true"
             android:layout_marginBottom="8dp" />
 
-    </LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>

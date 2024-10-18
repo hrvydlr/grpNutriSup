@@ -15,6 +15,7 @@ class ActivityLevelActivity : AppCompatActivity() {
 
     private lateinit var radioGroupActivityLevel: RadioGroup
     private lateinit var buttonSubmit: Button
+    private lateinit var buttonBack: Button // Reference to the back button
     private lateinit var auth: FirebaseAuth
     private val db = FirebaseFirestore.getInstance()
 
@@ -28,6 +29,7 @@ class ActivityLevelActivity : AppCompatActivity() {
         // Initialize the views
         radioGroupActivityLevel = findViewById(R.id.radioGroupActivityLevel)
         buttonSubmit = findViewById(R.id.buttonSubmit)
+        buttonBack = findViewById(R.id.buttonBack) // Initialize the back button
 
         buttonSubmit.setOnClickListener {
             val selectedId = radioGroupActivityLevel.checkedRadioButtonId
@@ -38,6 +40,11 @@ class ActivityLevelActivity : AppCompatActivity() {
 
             // Save the activity level to Firestore using email as the document ID
             saveActivityLevel(activityLevel)
+        }
+
+        // Set OnClickListener for the back button
+        buttonBack.setOnClickListener {
+            finish() // Closes the current activity and returns to the previous one
         }
     }
 

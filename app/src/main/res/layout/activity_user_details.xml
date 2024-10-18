@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
+
+    <!-- ScrollView to make content scrollable if it overflows -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/progressBar"
+        android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:src="@drawable/logo"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,7 +29,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_gravity="center"
-            android:paddingBottom="16dp"/>
+            android:paddingBottom="16dp" />
 
         <EditText
             android:id="@+id/editTextAge"
@@ -74,29 +79,29 @@
             android:layout_height="wrap_content"
             android:hint="Weight (kg)"
             android:inputType="numberDecimal"
-            android:paddingTop="16dp"
-            />
+            android:paddingTop="16dp" />
 
+        <!-- Submit Button -->
         <Button
             android:id="@+id/buttonSubmit"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="Submit"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:backgroundTint="#57BF2A"
-            android:layout_marginLeft="130dp"
-            />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:progress="20"
-            android:layout_marginTop="128sp"
-            android:layout_marginBottom="8dp" />
-
+            android:layout_gravity="center" />
 
     </LinearLayout>
-</RelativeLayout>
+</ScrollView>
+
+<ProgressBar
+android:id="@+id/progressBar"
+style="?android:attr/progressBarStyleHorizontal"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:max="100"
+android:progress="0"
+android:layout_alignParentBottom="true"
+    android:layout_marginBottom="8dp" />
+
+    </RelativeLayout>

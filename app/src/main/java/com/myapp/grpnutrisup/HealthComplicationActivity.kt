@@ -26,21 +26,24 @@ class HealthComplicationActivity : AppCompatActivity() {
         buttonNo = findViewById(R.id.buttonNo)
 
         buttonYes.setOnClickListener {
-            showWarningDialog()
-            saveUserResponse("yes") // Call function with "yes" as response
+            showWarningDialog("yes") // Pass "yes" to the dialog
         }
 
         buttonNo.setOnClickListener {
-            saveUserResponse("no") // Call function with "no" as response
+            saveUserResponse("no") // Directly save response for "no"
         }
     }
 
-    private fun showWarningDialog() {
+    private fun showWarningDialog(response: String) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Warning")
         builder.setMessage("Please consult a healthcare provider before proceeding.")
         builder.setPositiveButton("OK") { dialog, _ ->
             dialog.dismiss()
+            saveUserResponse(response) // Call saveUserResponse here after dialog is acknowledged
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss() // Dismiss dialog on cancel
         }
         val alertDialog = builder.create()
         alertDialog.show()
