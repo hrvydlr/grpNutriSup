@@ -31,16 +31,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias=".12">
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/imageSlider"
+        <ImageView
+            android:id="@+id/slider_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias=".16"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/banner"
+            android:scaleType="centerCrop" />
 
     </androidx.cardview.widget.CardView>
 
