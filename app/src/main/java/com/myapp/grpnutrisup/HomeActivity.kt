@@ -51,6 +51,7 @@ class HomeActivity : AppCompatActivity() {
         fatsValueTextView = findViewById(R.id.fats_value)
         bottomNavigation = findViewById(R.id.bottom_navigation)
 
+        // Initialize Firebase authentication and Firestore
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
@@ -58,6 +59,12 @@ class HomeActivity : AppCompatActivity() {
         displayRandomQuote()
         setupBottomNavigation()
         scheduleDailyIntakeReset()
+
+        // Set up click listener for "See all favorites" TextView
+        val seeAllFavoritesTextView = findViewById<TextView>(R.id.see_all_favorites)
+        seeAllFavoritesTextView.setOnClickListener {
+            startActivity(Intent(this, FavoritesActivity::class.java))
+        }
     }
 
     private fun setupBottomNavigation() {
@@ -183,6 +190,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
 }
+
 
 // Worker class to reset calorie, protein, and fats intake
 class ResetIntakeWorker(appContext: android.content.Context, workerParams: WorkerParameters) :

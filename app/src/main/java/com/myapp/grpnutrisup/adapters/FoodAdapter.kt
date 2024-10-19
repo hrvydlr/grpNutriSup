@@ -19,8 +19,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.myapp.grpnutrisup.R
 import com.myapp.grpnutrisup.models.Food
 
-class FoodAdapter(private val context: Context, private var foodList: List<Food>) :
-    RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
+class FoodAdapter(
+    private val context: Context,
+    private var foodList: List<Food>,
+    private var favoriteFoodNames: MutableList<String> // Change to MutableList for easier updates
+) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
@@ -41,6 +44,15 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
         holder.foodProteinsTextView.text = "Proteins: ${food.proteins?.takeIf { it > 0 } ?: "N/A"}"
         holder.foodFatsTextView.text = "Fats: ${food.fat?.takeIf { it > 0 } ?: "N/A"}"
         holder.foodAllergenTextView.text = "Allergens: ${food.allergens.ifEmpty { "None" }}"
+
+        // Set the favorite icon based on the favorite status
+        holder.favoriteButton.setImageResource(
+            if (favoriteFoodNames.contains(food.food_name)) {
+                android.R.drawable.star_big_on // Icon for favorited
+            } else {
+                android.R.drawable.star_big_off // Icon for not favorited
+            }
+        )
 
         // Log the storage path for debugging
         Log.d("FoodAdapter", "Fetching image for food: ${food.food_name}, Storage Path: ${food.imageUrl}")
@@ -68,9 +80,13 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
         holder.favoriteButton.setOnClickListener {
             val currentUser = auth.currentUser
             if (currentUser != null) {
-                addToFavorites(currentUser.email!!, food)
+                if (favoriteFoodNames.contains(food.food_name)) {
+                    removeFromFavorites(currentUser.email!!, food)
+                } else {
+                    addToFavorites(currentUser.email!!, food)
+                }
             } else {
-                Toast.makeText(context, "Please log in to add favorites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Please log in to manage favorites", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -81,6 +97,13 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
 
     fun updateList(newList: List<Food>) {
         foodList = newList
+        notifyDataSetChanged()
+    }
+
+    // Update to use MutableList
+    fun updateFavorites(newFavorites: List<String>) {
+        favoriteFoodNames.clear()
+        favoriteFoodNames.addAll(newFavorites)
         notifyDataSetChanged()
     }
 
@@ -110,11 +133,37 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
                 favoriteFoods.add(food.food_name)
                 userFavoritesRef.update("favoriteFoods", favoriteFoods)
                     .addOnSuccessListener {
+                        favoriteFoodNames.add(food.food_name) // Update local list
+                        notifyItemChanged(foodList.indexOf(food)) // Update the specific item in the adapter
                         Toast.makeText(context, "${food.food_name} added to your favorites", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
                         Toast.makeText(context, "Failed to add favorite", Toast.LENGTH_SHORT).show()
                     }
+            }
+        }.addOnFailureListener {
+            Toast.makeText(context, "Failed to retrieve favorites", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun removeFromFavorites(userEmail: String, food: Food) {
+        val userFavoritesRef = db.collection("users").document(userEmail)
+        userFavoritesRef.get().addOnSuccessListener { documentSnapshot ->
+            val favoriteFoods = documentSnapshot.get("favoriteFoods") as? MutableList<String> ?: mutableListOf()
+
+            if (favoriteFoods.contains(food.food_name)) {
+                favoriteFoods.remove(food.food_name)
+                userFavoritesRef.update("favoriteFoods", favoriteFoods)
+                    .addOnSuccessListener {
+                        favoriteFoodNames.remove(food.food_name) // Update local list
+                        notifyItemChanged(foodList.indexOf(food)) // Update the specific item in the adapter
+                        Toast.makeText(context, "${food.food_name} removed from your favorites", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(context, "Failed to remove favorite", Toast.LENGTH_SHORT).show()
+                    }
+            } else {
+                Toast.makeText(context, "${food.food_name} is not in your favorites", Toast.LENGTH_SHORT).show()
             }
         }.addOnFailureListener {
             Toast.makeText(context, "Failed to retrieve favorites", Toast.LENGTH_SHORT).show()
@@ -176,40 +225,27 @@ class FoodAdapter(private val context: Context, private var foodList: List<Food>
             .show()
     }
 
-    private fun updateIntakes(userEmail: String, foodCalories: Int, foodProteins: Int, foodFats: Int) {
-        val userDocRef = db.collection("users").document(userEmail)
+    private fun updateIntakes(userEmail: String, calories: Int, proteins: Int, fats: Int) {
+        val userRef = db.collection("users").document(userEmail)
 
-        // Fetch the current intakes (calorie, protein, fat) from Firestore
-        userDocRef.get().addOnSuccessListener { documentSnapshot ->
-            val currentCalorieIntake = documentSnapshot.getLong("calorieIntake")?.toInt() ?: 0
-            val currentProteinIntake = documentSnapshot.getLong("proteinIntake")?.toInt() ?: 0
-            val currentFatIntake = documentSnapshot.getLong("fatIntake")?.toInt() ?: 0
+        userRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                val updatedCalories = (document.get("calories") as? Long ?: 0) + calories
+                val updatedProteins = (document.get("proteins") as? Long ?: 0) + proteins
+                val updatedFats = (document.get("fats") as? Long ?: 0) + fats
 
-            val updatedCalorieIntake = currentCalorieIntake + foodCalories
-            val updatedProteinIntake = currentProteinIntake + foodProteins
-            val updatedFatIntake = currentFatIntake + foodFats
-
-            // Update the calorie, protein, and fat intake in Firestore
-            userDocRef.update(
-                mapOf(
-                    "calorieIntake" to updatedCalorieIntake,
-                    "proteinIntake" to updatedProteinIntake,
-                    "fatIntake" to updatedFatIntake
-                )
-            ).addOnSuccessListener {
-                Toast.makeText(
-                    context,
-                    "Intakes updated: Calories +$foodCalories, Proteins +$foodProteins, Fat +$foodFats",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }.addOnFailureListener {
-                Toast.makeText(context, "Failed to update intakes", Toast.LENGTH_SHORT).show()
+                userRef.update("calories", updatedCalories, "proteins", updatedProteins, "fats", updatedFats)
+                    .addOnSuccessListener {
+                        Toast.makeText(context, "Intake updated!", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(context, "Failed to update intake", Toast.LENGTH_SHORT).show()
+                    }
             }
         }.addOnFailureListener {
-            Toast.makeText(context, "Failed to fetch current intakes", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Failed to retrieve user data", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val foodNameTextView: TextView = itemView.findViewById(R.id.foodNameTextView)

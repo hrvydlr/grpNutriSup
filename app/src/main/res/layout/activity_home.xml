@@ -124,18 +124,23 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/see_all_label"
+        android:id="@+id/see_all_favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="See all"
         android:textColor="#57BF2A"
         android:textSize="12sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textStyle="bold"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias=".96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias=".38" />
+
 
     <TextView
         android:id="@+id/your_progress_label"

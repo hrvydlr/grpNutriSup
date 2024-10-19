@@ -33,15 +33,12 @@ class MealActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meal_plan)
 
-        // Check health complication status before proceeding
         checkHealthComplicationAndProceed()
     }
 
-    // Check for health complications from Firestore
     private fun checkHealthComplicationAndProceed() {
-        val currentUser = auth.currentUser
-        if (currentUser == null) {
-            Toast.makeText(this, "User is not logged in", Toast.LENGTH_SHORT).show()
+        val currentUser = auth.currentUser ?: run {
+            showToast("User is not logged in")
             return
         }
 
@@ -51,45 +48,41 @@ class MealActivity : AppCompatActivity() {
                 if (document.exists()) {
                     val healthComp = document.getString("healthComp") ?: "no"
                     if (healthComp.equals("yes", ignoreCase = true)) {
-                        // Health complication found, block access and show a message
-                        Toast.makeText(
-                            this,
-                            "Meal plans are disabled due to health complications.",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        // Optionally, you can finish the activity to prevent further access
+                        showToast("Meal plans are disabled due to health complications.")
                         finish()
                     } else {
-                        // No health complications, continue with setting up the meal plan
-                        setupRecyclerViews()
+                        val favoriteFoods = document.get("favoriteFoods") as? List<String> ?: emptyList()
+                        setupRecyclerViews(favoriteFoods)
                         setupBottomNavigation()
                         fetchMealPlan()
                         setupDailyMealPlanUpdate()
                     }
+                } else {
+                    showToast("User data not found")
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error fetching user data: ${e.message}", Toast.LENGTH_SHORT).show()
+                showToast("Error fetching user data: ${e.message}")
             }
     }
 
-    private fun setupRecyclerViews() {
+    private fun setupRecyclerViews(favoriteFoods: List<String>) {
         breakfastRecyclerView = findViewById(R.id.breakfastRecyclerView)
-        breakfastAdapter = FoodAdapter(this, emptyList())
+        breakfastAdapter = FoodAdapter(this, emptyList(), favoriteFoods.toMutableList()) // Convert to MutableList
         breakfastRecyclerView.layoutManager = LinearLayoutManager(this)
         breakfastRecyclerView.adapter = breakfastAdapter
 
         lunchRecyclerView = findViewById(R.id.lunchRecyclerView)
-        lunchAdapter = FoodAdapter(this, emptyList())
+        lunchAdapter = FoodAdapter(this, emptyList(), favoriteFoods.toMutableList()) // Convert to MutableList
         lunchRecyclerView.layoutManager = LinearLayoutManager(this)
         lunchRecyclerView.adapter = lunchAdapter
 
         dinnerRecyclerView = findViewById(R.id.dinnerRecyclerView)
-        dinnerAdapter = FoodAdapter(this, emptyList())
+        dinnerAdapter = FoodAdapter(this, emptyList(), favoriteFoods.toMutableList()) // Convert to MutableList
         dinnerRecyclerView.layoutManager = LinearLayoutManager(this)
         dinnerRecyclerView.adapter = dinnerAdapter
     }
+
 
     private fun setupBottomNavigation() {
         val bottomNav: BottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -116,13 +109,12 @@ class MealActivity : AppCompatActivity() {
     private fun navigateTo(destination: Class<*>) {
         val intent = Intent(this, destination)
         startActivity(intent)
-        finish() // Close current activity to prevent stack buildup
+        finish()
     }
 
     private fun fetchMealPlan() {
-        val currentUser = auth.currentUser
-        if (currentUser == null) {
-            Toast.makeText(this, "User is not logged in", Toast.LENGTH_SHORT).show()
+        val currentUser = auth.currentUser ?: run {
+            showToast("User is not logged in")
             return
         }
 
@@ -130,43 +122,30 @@ class MealActivity : AppCompatActivity() {
         db.collection("users").document(userEmail).get()
             .addOnSuccessListener { userDocument ->
                 if (userDocument.exists()) {
-                    // Retrieve user data properly from the DocumentSnapshot
                     val userAllergies = userDocument.get("allergens") as? List<String> ?: emptyList()
                     val favoriteFoods = userDocument.get("favoriteFoods") as? List<String> ?: emptyList()
+
                     val calorieResult = userDocument.getDouble("calorieResult") ?: 2000.0
                     val currentCalorieIntake = userDocument.getDouble("calorieIntake") ?: 0.0
                     val proteinIntake = userDocument.getDouble("proteinIntake") ?: 0.0
                     val fatIntake = userDocument.getDouble("fatIntake") ?: 0.0
 
-                    // Calculate remaining intake goals
-                    val remainingCalories = calorieResult - currentCalorieIntake
-                    val remainingProtein = calculateRemainingProtein(proteinIntake)
-                    val remainingFat = calculateRemainingFat(fatIntake)
+                    val remainingCalories = calculateRemainingIntake(calorieResult, currentCalorieIntake)
+                    val remainingProtein = calculateRemainingIntake(50.0, proteinIntake) // Protein goal
+                    val remainingFat = calculateRemainingIntake(70.0, fatIntake) // Fat goal
 
-                    // Generate a meal plan based on remaining intake goals
-                    generatePrescriptiveMealPlan(
-                        userAllergies,
-                        favoriteFoods,
-                        remainingCalories,
-                        remainingProtein,
-                        remainingFat
-                    )
+                    generatePrescriptiveMealPlan(userAllergies, favoriteFoods, remainingCalories, remainingProtein, remainingFat)
                 } else {
-                    Toast.makeText(this, "User data not found", Toast.LENGTH_SHORT).show()
+                    showToast("User data not found")
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error fetching user data: ${e.message}", Toast.LENGTH_SHORT).show()
+                showToast("Error fetching user data: ${e.message}")
             }
     }
 
-    // Modify the calculation functions to accept the actual values
-    private fun calculateRemainingProtein(currentProteinIntake: Double): Double {
-        return 50.0 - currentProteinIntake // Example: assuming 50g is the goal
-    }
-
-    private fun calculateRemainingFat(currentFatIntake: Double): Double {
-        return 70.0 - currentFatIntake // Example: assuming 70g is the goal
+    private fun calculateRemainingIntake(goal: Double, currentIntake: Double): Double {
+        return goal - currentIntake
     }
 
     private fun generatePrescriptiveMealPlan(
@@ -176,21 +155,15 @@ class MealActivity : AppCompatActivity() {
         remainingProtein: Double,
         remainingFat: Double
     ) {
-        val mealPlan = mutableMapOf<String, List<Food>>()
-
-        // Fetch and optimize for each meal (Breakfast, Lunch, Dinner)
         fetchOptimizedFoodForMeal("Breakfast", allergies, favoriteFoods, remainingCalories * 0.3, remainingProtein * 0.3, remainingFat * 0.3) { breakfastList ->
-            mealPlan["Breakfast"] = breakfastList
             breakfastAdapter.updateList(breakfastList)
         }
 
         fetchOptimizedFoodForMeal("Lunch", allergies, favoriteFoods, remainingCalories * 0.4, remainingProtein * 0.4, remainingFat * 0.4) { lunchList ->
-            mealPlan["Lunch"] = lunchList
             lunchAdapter.updateList(lunchList)
         }
 
         fetchOptimizedFoodForMeal("Dinner", allergies, favoriteFoods, remainingCalories * 0.3, remainingProtein * 0.3, remainingFat * 0.3) { dinnerList ->
-            mealPlan["Dinner"] = dinnerList
             dinnerAdapter.updateList(dinnerList)
         }
     }
@@ -219,16 +192,12 @@ class MealActivity : AppCompatActivity() {
                 }
 
                 // Prioritize favorite foods in the selection
-                val prioritizedFoods = availableFoods.filter { food ->
-                    favoriteFoods.contains(food.food_name)
-                }.ifEmpty { availableFoods } // Fallback to all foods if no favorites found
-
-                // Apply prescriptive analytics to optimize the food selection
+                val prioritizedFoods = availableFoods.filter { food -> favoriteFoods.contains(food.food_name) }.ifEmpty { availableFoods }
                 val selectedFoods = optimizeFoodSelection(prioritizedFoods, calorieGoal, proteinGoal, fatGoal)
                 callback(selectedFoods)
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error fetching $mealType foods: ${e.message}", Toast.LENGTH_SHORT).show()
+                showToast("Error fetching $mealType foods: ${e.message}")
             }
     }
 
@@ -243,7 +212,7 @@ class MealActivity : AppCompatActivity() {
         var totalProteins = 0.0
         var totalFats = 0.0
 
-        // Simple greedy algorithm to select foods until matching daily goals
+        // Greedy algorithm to select foods until matching daily goals
         for (food in availableFoods) {
             if (totalCalories < calorieGoal && totalProteins < proteinGoal && totalFats < fatGoal) {
                 selectedFoods.add(food)
@@ -256,7 +225,6 @@ class MealActivity : AppCompatActivity() {
         return selectedFoods
     }
 
-    // Schedule a daily update of the meal plan at a specific time
     private fun setupDailyMealPlanUpdate() {
         val workRequest = PeriodicWorkRequestBuilder<MealPlanUpdateWorker>(24, TimeUnit.HOURS)
             .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
@@ -269,20 +237,23 @@ class MealActivity : AppCompatActivity() {
         )
     }
 
-    // Calculate the initial delay to start the meal plan update at 8 AM every day
     private fun calculateInitialDelay(): Long {
         val currentTime = Calendar.getInstance()
         val targetTime = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 8) // Set the desired time, e.g., 8 AM
+            set(Calendar.HOUR_OF_DAY, 8) // 8 AM
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
         }
 
         if (currentTime.after(targetTime)) {
-            targetTime.add(Calendar.DAY_OF_MONTH, 1) // Move to the next day if time has passed
+            targetTime.add(Calendar.DAY_OF_MONTH, 1) // Move to next day
         }
 
         return targetTime.timeInMillis - currentTime.timeInMillis
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -291,8 +262,8 @@ class MealPlanUpdateWorker(appContext: android.content.Context, workerParams: Wo
     CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        // Update the meal plan logic here. You can reuse some logic from MealActivity.
         Log.d("MealPlanUpdateWorker", "Updating meal plan in the background")
+        // Implement your meal plan update logic here
         return Result.success()
     }
 }

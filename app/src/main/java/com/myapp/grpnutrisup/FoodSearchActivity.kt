@@ -2,11 +2,8 @@ package com.myapp.grpnutrisup
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -14,6 +11,8 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -22,8 +21,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.myapp.grpnutrisup.adapters.FoodAdapter
 import com.myapp.grpnutrisup.models.Food
-import kotlinx.coroutines.*
-import androidx.appcompat.app.AlertDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FoodSearchActivity : AppCompatActivity() {
 
@@ -35,7 +37,7 @@ class FoodSearchActivity : AppCompatActivity() {
     private lateinit var emptyMessage: TextView
     private lateinit var db: FirebaseFirestore
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
-
+    private var favoriteFoodNames: MutableList<String> = mutableListOf() // Initialize here
     private var searchJob: Job? = null
     private var hasHealthComplication: Boolean = false
 
@@ -51,8 +53,7 @@ class FoodSearchActivity : AppCompatActivity() {
         emptyMessage = findViewById(R.id.emptyMessage)
         recyclerViewFoods.layoutManager = LinearLayoutManager(this)
 
-        val clearButton: ImageButton = findViewById(R.id.clear_button)
-        clearButton.setOnClickListener {
+        findViewById<ImageButton>(R.id.clear_button).setOnClickListener {
             autoCompleteTextView.text.clear()
             foodAdapter.updateList(foodList)
             emptyMessage.visibility = View.GONE
@@ -66,8 +67,8 @@ class FoodSearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchJob?.cancel()
-                searchJob = GlobalScope.launch(Dispatchers.Main) {
-                    delay(300L)
+                searchJob = lifecycleScope.launch {
+                    delay(300L) // Debounce delay
                     filterFoodList(s.toString())
                 }
             }
@@ -79,14 +80,36 @@ class FoodSearchActivity : AppCompatActivity() {
     private fun checkHealthComplication() {
         val currentUser = auth.currentUser ?: return
 
-        db.collection("users").document(currentUser.email!!).get()
+        db.collection("users").document(currentUser.email!!)
+            .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     hasHealthComplication = document.getString("healthComp") == "yes"
+                    fetchFavoriteFoodNames() // Fetch favorite food names here
                     setupBottomNavigation()
                 }
             }
-            .addOnFailureListener { setupBottomNavigation() }
+            .addOnFailureListener {
+                setupBottomNavigation()
+            }
+    }
+
+    private fun fetchFavoriteFoodNames() {
+        val currentUser = auth.currentUser ?: return
+
+        db.collection("users").document(currentUser.email!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    favoriteFoodNames = document.get("favoriteFoods") as? MutableList<String> ?: mutableListOf()
+                    // After fetching favorite food names, update the adapter
+                    foodAdapter = FoodAdapter(this, foodList, favoriteFoodNames)
+                    recyclerViewFoods.adapter = foodAdapter
+                }
+            }
+            .addOnFailureListener { e ->
+                showErrorSnackbar("Error fetching favorite foods: ${e.message}")
+            }
     }
 
     private fun setupBottomNavigation() {
@@ -158,7 +181,7 @@ class FoodSearchActivity : AppCompatActivity() {
     }
 
     private fun updateRecyclerView() {
-        foodAdapter = FoodAdapter(this, foodList)
+        foodAdapter = FoodAdapter(this, foodList, favoriteFoodNames) // Ensure to pass the favoriteFoodNames here
         recyclerViewFoods.adapter = foodAdapter
     }
 

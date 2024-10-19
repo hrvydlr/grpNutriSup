@@ -13,4 +13,5 @@ data class Food(
     var meal_type: String = "",       // Match Firestore field
     var allergens: String = "",
     var imageUrl: String = ""
+
 )
