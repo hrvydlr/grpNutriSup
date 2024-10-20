@@ -230,9 +230,9 @@ class FoodAdapter(
 
         userRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
-                val updatedCalories = (document.get("calories") as? Long ?: 0) + calories
-                val updatedProteins = (document.get("proteins") as? Long ?: 0) + proteins
-                val updatedFats = (document.get("fats") as? Long ?: 0) + fats
+                val updatedCalories = (document.get("calorieIntake") as? Long ?: 0) + calories
+                val updatedProteins = (document.get("proteinIntake") as? Long ?: 0) + proteins
+                val updatedFats = (document.get("fatIntake") as? Long ?: 0) + fats
 
                 userRef.update("calories", updatedCalories, "proteins", updatedProteins, "fats", updatedFats)
                     .addOnSuccessListener {
