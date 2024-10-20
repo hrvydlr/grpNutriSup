@@ -44,6 +44,17 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        // Initialize Firebase authentication
+        auth = FirebaseAuth.getInstance()
+
+        // Check if the user is logged in. If not, redirect to LoginActivity.
+        if (auth.currentUser == null) {
+            // User is not logged in, navigate to LoginActivity
+            navigateToLogin()
+            return
+        }
+
+        // Continue with fetching data and setting up UI
         greetingTextView = findViewById(R.id.greeting)
         caloriesValueTextView = findViewById(R.id.calories_value)
         caloriesProgressBar = findViewById(R.id.calories_progress)
@@ -51,8 +62,7 @@ class HomeActivity : AppCompatActivity() {
         fatsValueTextView = findViewById(R.id.fats_value)
         bottomNavigation = findViewById(R.id.bottom_navigation)
 
-        // Initialize Firebase authentication and Firestore
-        auth = FirebaseAuth.getInstance()
+        // Initialize Firestore
         firestore = FirebaseFirestore.getInstance()
 
         fetchUserDataAndUpdateUI() // Fetch data first to update UI and check health status
@@ -66,6 +76,13 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, FavoritesActivity::class.java))
         }
     }
+
+    private fun navigateToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish() // Close the current activity to prevent users from going back to it
+    }
+
 
     private fun setupBottomNavigation() {
         bottomNavigation.setOnNavigationItemSelectedListener { item ->

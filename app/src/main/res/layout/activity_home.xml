@@ -211,7 +211,7 @@
                 android:layout_height="20dp"
                 android:max="500"
                 android:min="0"
-                android:progress="200"
+                android:progress="0"
                 android:progressDrawable="@drawable/custom_progressbar" />
 
             <!-- Protein Section -->

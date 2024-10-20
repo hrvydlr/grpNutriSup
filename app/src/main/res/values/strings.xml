@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">grpNutriSup</string>
+    <string name="app_name">NutriSupp</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_user_details">UserDetailsActivity</string>
     <string name="title_activity_main">MainActivity</string>

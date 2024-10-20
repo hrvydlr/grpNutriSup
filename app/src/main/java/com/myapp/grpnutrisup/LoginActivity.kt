@@ -25,6 +25,13 @@ class LoginActivity : AppCompatActivity() {
         // Initialize FirebaseAuth
         auth = FirebaseAuth.getInstance()
 
+        // Check if the user is already logged in
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            // If user is already logged in, navigate directly to HomeActivity
+            navigateToHome()
+        }
+
         // Initialize EditTexts and Buttons with correct IDs
         editTextEmail = findViewById(R.id.editTextEmail)
         editTextPassword = findViewById(R.id.editTextPassword)
@@ -41,11 +48,8 @@ class LoginActivity : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
-
-                            // Redirect to MainActivity after successful login
-                            val intent = Intent(this, HomeActivity::class.java)
-                            startActivity(intent)
-                            finish() // Optional: Close LoginActivity so the user can't go back to it
+                            // Redirect to HomeActivity after successful login
+                            navigateToHome()
                         } else {
                             Toast.makeText(this, "Invalid Email or Password!", Toast.LENGTH_SHORT).show()
                         }
@@ -59,5 +63,12 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    // Helper function to navigate to HomeActivity
+    private fun navigateToHome() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish() // Optional: Close LoginActivity so the user can't go back to it
     }
 }
