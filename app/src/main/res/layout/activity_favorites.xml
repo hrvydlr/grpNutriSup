@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFF8E3">
 
     <!-- Title TextView for Favorites -->
     <TextView
@@ -11,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Favorites"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         android:layout_margin="16dp"
         android:textColor="@android:color/black"
@@ -20,15 +21,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center" />
 
-    <!-- RecyclerView to display the list of favorite items -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favorites_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="16dp"
+        android:padding="8dp"
         app:layout_constraintTop_toBottomOf="@id/title_text_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        android:clipToPadding="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
