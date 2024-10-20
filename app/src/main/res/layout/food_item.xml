@@ -1,106 +1,107 @@
-<RelativeLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="230dp"
-    android:padding="16dp"
-    android:layout_marginLeft="6dp"
-    android:layout_marginTop="4dp"
-    android:background="@drawable/border_background"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
 
-    <!-- Linear Layout to hold text content on the left -->
-    <LinearLayout
-        android:id="@+id/textContentLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:padding="16dp"
+        android:background="@color/white">
 
-        <!-- Food Name TextView -->
-        <TextView
-            android:id="@+id/foodNameTextView"
+        <LinearLayout
+            android:id="@+id/textContentLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/foodNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Food Name"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/foodDescriptionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Food Description"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginTop="2dp"/>
+
+            <TextView
+                android:id="@+id/foodCaloriesTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calories: "
+                android:textSize="12sp"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/foodCarbsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Carbohydrates: "
+                android:textSize="12sp"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/foodProteinsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Proteins: "
+                android:textSize="12sp"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/foodFatsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fats: "
+                android:textSize="12sp"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/foodAllergenTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Allergens: "
+                android:textSize="12sp"
+                android:textColor="@android:color/black"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/foodImageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="16dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/image_background"
+            android:clipToOutline="true"/>
+
+        <ImageButton
+            android:id="@+id/favouriteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Food Name"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"/>
-
-        <!-- Food Description TextView -->
-        <TextView
-            android:id="@+id/foodDescriptionTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Food Description"
-            android:textSize="12sp"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginTop="3dp"/>
-
-        <!-- Additional Nutritional Information -->
-        <TextView
-            android:id="@+id/foodCaloriesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calories: "
-            android:textSize="12sp"
-            android:textColor="@android:color/black"/>
-
-        <TextView
-            android:id="@+id/foodCarbsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Carbohydrates: "
-            android:textSize="12sp"
-            android:textColor="@android:color/black"/>
-
-        <TextView
-            android:id="@+id/foodProteinsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Proteins: "
-            android:textSize="12sp"
-            android:textColor="@android:color/black"/>
-
-        <TextView
-            android:id="@+id/foodFatsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fats: "
-            android:textSize="12sp"
-            android:textColor="@android:color/black"/>
-
-        <TextView
-            android:id="@+id/foodAllergenTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Allergens: "
-            android:textSize="12sp"
-            android:textColor="@android:color/black"/>
-    </LinearLayout>
-
-    <!-- Image on the right side -->
-    <ImageView
-        android:id="@+id/foodImageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerCrop"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="16dp"
-        android:layout_centerVertical="true"/>
-
-    <!-- ImageButton for Adding to Favourites -->
-    <ImageButton
-        android:id="@+id/favouriteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="Add to Favourites"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"/>
-</RelativeLayout>
+            android:contentDescription="Add to Favourites"
+            android:background="@color/transparent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_favorite" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
