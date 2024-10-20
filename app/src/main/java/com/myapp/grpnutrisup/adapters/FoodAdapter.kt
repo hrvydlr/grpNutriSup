@@ -234,7 +234,7 @@ class FoodAdapter(
                 val updatedProteins = (document.get("proteinIntake") as? Long ?: 0) + proteins
                 val updatedFats = (document.get("fatIntake") as? Long ?: 0) + fats
 
-                userRef.update("calories", updatedCalories, "proteins", updatedProteins, "fats", updatedFats)
+                userRef.update("calorieIntake", updatedCalories, "proteinIntake", updatedProteins, "fatIntake", updatedFats)
                     .addOnSuccessListener {
                         Toast.makeText(context, "Intake updated!", Toast.LENGTH_SHORT).show()
                     }
