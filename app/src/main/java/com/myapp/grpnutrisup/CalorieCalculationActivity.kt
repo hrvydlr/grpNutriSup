@@ -76,11 +76,11 @@ class CalorieCalculationActivity : AppCompatActivity() {
     // Step 2: Calculate TDEE by multiplying BMR by activity factor
     private fun calculateTDEE(bmr: Double, activityLevel: String): Double {
         return when (activityLevel) {
-            "Sedentary" -> bmr * 1.2
-            "Lightly active" -> bmr * 1.375
-            "Moderately active" -> bmr * 1.55
-            "Very active" -> bmr * 1.725
-            "Super active" -> bmr * 1.9
+            "Sedentary (little or no exercise)" -> bmr * 1.2
+            "Lightly Active (light exercise/sports 1-3 days/week)" -> bmr * 1.375
+            "Moderately Active (moderate exercise/sports 3-5 days/week)" -> bmr * 1.55
+            "Very Active (hard exercise/sports 6-7 days a week)" -> bmr * 1.725
+            "Extra Active (very hard exercise/physical job)" -> bmr * 1.9
             else -> bmr * 1.2 // Default to Sedentary if activity level is unknown
         }
     }

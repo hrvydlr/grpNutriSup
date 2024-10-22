@@ -156,6 +156,9 @@ class ProfileActivity : AppCompatActivity() {
     // Bottom Navigation Setup
     private fun setupBottomNavigation() {
         val bottomNav: BottomNavigationView = findViewById(R.id.bottom_navigation)
+
+        bottomNav.selectedItemId = R.id.navigation_profile
+
         bottomNav.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.navigation_home -> {

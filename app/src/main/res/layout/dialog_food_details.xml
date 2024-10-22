@@ -71,6 +71,14 @@
         android:layout_below="@id/dialogFoodFatsTextView"
         android:textSize="14sp" />
 
+    <TextView
+        android:id="@+id/dialogFoodServingSizeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Serving Size"
+        android:layout_below="@id/dialogFoodAllergenTextView"
+        android:textSize="14sp" />
+
     <!-- Added Button for 'Eaten' functionality -->
     <Button
         android:id="@+id/dialogFoodEatenButton"
