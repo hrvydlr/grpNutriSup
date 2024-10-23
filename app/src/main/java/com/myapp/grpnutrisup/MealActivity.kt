@@ -94,7 +94,7 @@ class MealActivity : AppCompatActivity() {
                 if (userDocument.exists()) {
                     // Fetch user-specific data (preferences, goals, etc.)
                     val calorieGoal = userDocument.getDouble("calorieGoal") ?: 2000.0
-                    val allergies = userDocument.get("allergies") as? List<String> ?: emptyList()
+                    val allergies = userDocument.get("allergens") as? List<String> ?: emptyList()
                     val preferences = userDocument.get("favoriteFoods") as? List<String> ?: emptyList()
 
                     // Track user's goal (e.g., "gain_weight" or "lose_weight")

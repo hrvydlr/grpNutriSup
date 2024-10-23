@@ -105,7 +105,7 @@ class AllergenSelectionActivity : AppCompatActivity() {
                 if (checkBoxTreeNuts.isChecked) allergens.add("Tree nuts")
                 if (checkBoxPeanuts.isChecked) allergens.add("Peanuts")
                 if (checkBoxWheat.isChecked) allergens.add("Wheat")
-                if (checkBoxSoybeans.isChecked) allergens.add("Soybeans")
+                if (checkBoxSoybeans.isChecked) allergens.add("Soy")
                 if (checkBoxSesame.isChecked) allergens.add("Sesame")
                 if (checkBoxNone.isChecked) allergens.add("None")
 
