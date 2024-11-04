@@ -95,7 +95,6 @@ class UserCollectionActivity : AppCompatActivity() {
         val gender = when (radioGroupGender.checkedRadioButtonId) {
             R.id.radioMale -> "Male"
             R.id.radioFemale -> "Female"
-            R.id.radioOther -> "Other"
             else -> ""
         }
 

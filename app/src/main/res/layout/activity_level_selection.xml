@@ -96,7 +96,7 @@
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="Submit"
-                    android:layout_marginLeft="130dp"
+                    android:layout_marginLeft="20dp"
                     android:backgroundTint="#57BF2A"
                     android:layout_gravity="center" />
             </LinearLayout>
