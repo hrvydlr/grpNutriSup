@@ -1,5 +1,6 @@
 package com.myapp.grpnutrisup.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,9 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.myapp.grpnutrisup.R
 import com.myapp.grpnutrisup.adapters.FoodAdapter
 import com.myapp.grpnutrisup.models.Food
+import java.text.SimpleDateFormat
+import java.util.*
 
 class BreakfastFragment : Fragment() {
 
@@ -21,23 +26,19 @@ class BreakfastFragment : Fragment() {
     private lateinit var breakfastAdapter: FoodAdapter
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
+    private val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+    private var lastFetchDate: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_breakfast, container, false)
-
-        // Initialize RecyclerView and set the adapter
         initializeRecyclerView(view)
-
-        // Load user data and fetch optimized food items
         loadUserDataAndFetchFood()
-
         return view
     }
 
-    // Initializes the RecyclerView with layout manager and adapter
     private fun initializeRecyclerView(view: View) {
         breakfastRecyclerView = view.findViewById(R.id.breakfastRecyclerView)
         breakfastAdapter = FoodAdapter(requireContext(), emptyList(), mutableListOf())
@@ -47,20 +48,35 @@ class BreakfastFragment : Fragment() {
         }
     }
 
-    // Fetches user data and retrieves optimized food items
     private fun loadUserDataAndFetchFood() {
         fetchUserData { tdee, goal, allergens ->
             val dailyCalorieGoal = calculateCalorieGoal(tdee, goal)
             val breakfastCalorieGoal = calculateMealCalorieGoal(dailyCalorieGoal, "Breakfast")
 
-            fetchOptimizedFoodForMeal("Breakfast", breakfastCalorieGoal, allergens, goal) { foods ->
-                breakfastAdapter.updateList(foods)
-                breakfastRecyclerView.visibility = View.VISIBLE // Ensure visibility after update
+            // Check if we need to fetch new food items based on the current date
+            val currentDate = dateFormat.format(Date())
+            if (currentDate != lastFetchDate) {
+                lastFetchDate = currentDate // Update the last fetch date
+                fetchOptimizedFoodForMeal("Breakfast", breakfastCalorieGoal, allergens, goal) { foods ->
+                    breakfastAdapter.updateList(foods)
+                    // Optionally, save lastFetchDate to shared preferences
+                    saveLastFetchDate(currentDate)
+                }
+            } else {
+                // If it's the same day, we can use cached items
+                val cachedFoods = loadCachedFoodItems()
+                if (cachedFoods.isNotEmpty()) {
+                    breakfastAdapter.updateList(cachedFoods)
+                } else {
+                    // If there are no cached items, still fetch to ensure the list is populated
+                    fetchOptimizedFoodForMeal("Breakfast", breakfastCalorieGoal, allergens, goal) { foods ->
+                        breakfastAdapter.updateList(foods)
+                    }
+                }
             }
         }
     }
 
-    // Fetches user-specific data such as TDEE, goal, and allergens from Firebase
     private fun fetchUserData(callback: (Double, String, List<String>) -> Unit) {
         val userId = auth.currentUser?.uid
         if (userId == null) {
@@ -85,7 +101,6 @@ class BreakfastFragment : Fragment() {
             }
     }
 
-    // Fetches and filters food items based on meal type, calorie goal, and user allergies
     private fun fetchOptimizedFoodForMeal(
         mealType: String,
         calorieGoal: Double,
@@ -120,14 +135,12 @@ class BreakfastFragment : Fragment() {
             }
     }
 
-    // Sorts foods based on user's goal (gain, lose, or maintain)
     private fun List<Food>.sortFoodsByGoal(goal: String) = when (goal.lowercase()) {
         "gain" -> sortedByDescending { it.calories }
         "lose" -> sortedBy { it.calories }
         else -> this
     }
 
-    // Selects foods to reach the calorie goal while staying under the limit
     private fun selectFoodsToMeetCalorieGoal(
         foods: List<Food>,
         calorieGoal: Double
@@ -144,12 +157,10 @@ class BreakfastFragment : Fragment() {
         return selectedFoods
     }
 
-    // Displays a toast message to the user
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    // Calculates daily calorie goal based on user's TDEE and goal
     private fun calculateCalorieGoal(tdee: Double, goal: String): Double {
         return when (goal.lowercase()) {
             "gain" -> tdee * 1.1  // 10% increase for gain
@@ -158,7 +169,6 @@ class BreakfastFragment : Fragment() {
         }
     }
 
-    // Calculates calorie goal for a specific meal type
     private fun calculateMealCalorieGoal(dailyCalories: Double, mealType: String): Double {
         return when (mealType.lowercase()) {
             "breakfast" -> dailyCalories * 0.25
@@ -169,8 +179,31 @@ class BreakfastFragment : Fragment() {
         }
     }
 
-    // Logs debug information for troubleshooting
     private fun logDebug(message: String) {
         Log.d("BreakfastFragment", message)
+    }
+
+    private fun saveLastFetchDate(date: String) {
+        val sharedPreferences = requireContext().getSharedPreferences("UserFoodPrefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString("lastFetchDate", date).apply()
+    }
+
+    private fun loadCachedFoodItems(): List<Food> {
+        val sharedPreferences = requireContext().getSharedPreferences("UserFoodPrefs", Context.MODE_PRIVATE)
+        val jsonString = sharedPreferences.getString("cachedFoodItems", null)
+        return if (jsonString != null) {
+            val gson = Gson()
+            val foodType = object : TypeToken<List<Food>>() {}.type
+            gson.fromJson(jsonString, foodType) ?: emptyList()
+        } else {
+            emptyList()
+        }
+    }
+
+    private fun saveFoodItemsToPreferences(foods: List<Food>) {
+        val gson = Gson()
+        val jsonString = gson.toJson(foods)
+        val sharedPreferences = requireContext().getSharedPreferences("UserFoodPrefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString("cachedFoodItems", jsonString).apply()
     }
 }
