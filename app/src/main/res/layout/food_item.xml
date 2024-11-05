@@ -1,114 +1,118 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="230dp"
     android:padding="16dp"
     android:layout_marginLeft="6dp"
     android:layout_marginTop="4dp"
     android:background="@drawable/border_background"
+    android:clickable="true"
+    android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
 
     <!-- Linear Layout to hold text content on the left -->
-<LinearLayout
-android:id="@+id/textContentLayout"
-android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:layout_toLeftOf="@id/foodImageView"
-    android:layout_toStartOf="@id/foodImageView"
-    android:layout_marginEnd="12dp">
+    <LinearLayout
+        android:id="@+id/textContentLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@id/foodImageView"
+        android:layout_toStartOf="@id/foodImageView"
+        android:layout_marginEnd="12dp"
+        android:layout_weight="1">
 
-    <!-- Food Name TextView -->
-<TextView
-android:id="@+id/foodNameTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Food Name"
-android:textStyle="bold"
-android:textSize="16sp"
-android:textColor="@android:color/black"/>
+        <!-- Food Name TextView -->
+        <TextView
+            android:id="@+id/foodNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Food Name"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"/>
 
-    <!-- Food Description TextView -->
-<TextView
-android:id="@+id/foodDescriptionTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Food Description"
-android:textSize="12sp"
-android:textColor="@android:color/darker_gray"
-android:layout_marginTop="3dp"/>
+        <!-- Food Description TextView -->
+        <TextView
+            android:id="@+id/foodDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Food Description"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginTop="3dp"/>
 
-    <!-- Additional Nutritional Information -->
-<TextView
-android:id="@+id/foodCaloriesTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Calories: "
-android:textSize="12sp"
-android:textColor="@android:color/black"/>
+        <!-- Additional Nutritional Information -->
+        <TextView
+            android:id="@+id/foodCaloriesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calories: "
+            android:textSize="12sp"
+            android:textColor="@android:color/black"/>
 
-<TextView
-android:id="@+id/foodCarbsTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Carbohydrates: "
-android:textSize="12sp"
-android:textColor="@android:color/black"/>
+        <TextView
+            android:id="@+id/foodCarbsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Carbohydrates: "
+            android:textSize="12sp"
+            android:textColor="@android:color/black"/>
 
-<TextView
-android:id="@+id/foodProteinsTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Proteins: "
-android:textSize="12sp"
-android:textColor="@android:color/black"/>
+        <TextView
+            android:id="@+id/foodProteinsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Proteins: "
+            android:textSize="12sp"
+            android:textColor="@android:color/black"/>
 
-<TextView
-android:id="@+id/foodFatsTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Fats: "
-android:textSize="12sp"
-android:textColor="@android:color/black"/>
+        <TextView
+            android:id="@+id/foodFatsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fats: "
+            android:textSize="12sp"
+            android:textColor="@android:color/black"/>
 
-<TextView
-android:id="@+id/foodAllergenTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Allergens: "
-android:textSize="12sp"
-android:textColor="@android:color/black"/>
+        <TextView
+            android:id="@+id/foodAllergenTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Allergens: "
+            android:textSize="12sp"
+            android:textColor="@android:color/black"/>
 
-<TextView
-android:id="@+id/foodServingSizeTextView"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text=" "
-android:textSize="12sp"
-android:textColor="@android:color/black"/>
+        <TextView
+            android:id="@+id/foodServingSizeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textSize="12sp"
+            android:textColor="@android:color/black"/>
     </LinearLayout>
 
     <!-- Image on the right side -->
-<ImageView
-android:id="@+id/foodImageView"
-android:layout_width="100dp"
-android:layout_height="100dp"
-android:scaleType="centerCrop"
-android:layout_alignParentRight="true"
-android:layout_alignParentEnd="true"
-android:layout_marginLeft="16dp"
-android:layout_centerVertical="true"/>
+    <ImageView
+        android:id="@+id/foodImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="16dp"
+        android:layout_centerVertical="true"/>
 
-    <!-- ImageButton for Adding to Favourites, aligned next to foodImageView -->
-<ImageButton
-android:id="@+id/favouriteButton"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:contentDescription="Add to Favourites"
-android:background="?attr/selectableItemBackgroundBorderless"
-android:layout_alignParentTop="true"
-android:layout_toLeftOf="@id/foodImageView"
-android:layout_marginEnd="8dp"/>
-    </RelativeLayout>
+    <!-- ImageButton for Adding to Favourites -->
+    <ImageButton
+        android:id="@+id/favouriteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Add to Favourites"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_below="@id/foodImageView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"/>
+</RelativeLayout>
