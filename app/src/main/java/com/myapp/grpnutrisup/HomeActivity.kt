@@ -31,14 +31,6 @@ class HomeActivity : AppCompatActivity() {
 
     private var hasHealthComplication = false // Track health complication status
 
-    private val quotes = listOf(
-        "The greatest wealth is health.",
-        "Take care of your body. It’s the only place you have to live.",
-        "Healthy citizens are the greatest asset any country can have.",
-        "You are what you eat, so don’t be fast, cheap, easy, or fake.",
-        "Health is not about the weight you lose, but about the life you gain.",
-        "Your body is your most priceless possession, take care of it."
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +58,6 @@ class HomeActivity : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         fetchUserDataAndUpdateUI() // Fetch data first to update UI and check health status
-        displayRandomQuote()
         setupBottomNavigation()
         scheduleDailyIntakeReset()
 
@@ -110,11 +101,6 @@ class HomeActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
-
-    private fun displayRandomQuote() {
-        val randomIndex = Random.nextInt(quotes.size)
-        greetingTextView.text = quotes[randomIndex]
     }
 
     @SuppressLint("SetTextI18n")

@@ -151,7 +151,7 @@ class FoodSearchActivity : AppCompatActivity() {
                             food_name = doc.getString("food_name") ?: "",
                             food_desc = doc.getString("food_desc") ?: "",
                             calories = doc.getLong("calories")?.toInt() ?: 0,
-                            carbohydrate = doc.getLong("carbohydrate")?.toInt() ?: 0,
+                            carbohydrates = doc.getLong("carbohydrates")?.toInt() ?: 0,
                             fat = doc.getLong("fat")?.toInt() ?: 0,
                             fiber = doc.getLong("fiber")?.toInt() ?: 0,
                             proteins = doc.getLong("proteins")?.toInt() ?: 0,
@@ -159,7 +159,7 @@ class FoodSearchActivity : AppCompatActivity() {
                             goal_type = doc.getString("goal_type") ?: "",
                             meal_type = doc.getString("meal_type") ?: "",
                             allergens = doc.getString("allergens") ?: "",
-                            imageUrl = doc.getString("imageUrl") ?: ""
+                            image_url = doc.getString("image_url") ?: ""
                         )
                     }
                     updateRecyclerView()

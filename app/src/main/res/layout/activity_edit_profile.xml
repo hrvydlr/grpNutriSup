@@ -9,6 +9,7 @@
     android:background="#FFF8E3"
     tools:context=".EditProfileActivity">
 
+    <!-- Title at the top, fixed position -->
     <TextView
         android:id="@+id/titleEditProfile"
         android:layout_width="wrap_content"
@@ -19,150 +20,202 @@
         android:textColor="@android:color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
-
-    <!-- EditText for Age -->
-    <EditText
-        android:id="@+id/editTextAge"
+    <!-- Scrollable container for the form inputs -->
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Age"
-        android:inputType="number"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginTop="28dp"
-        app:layout_constraintTop_toBottomOf="@id/titleEditProfile"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- EditText for Height -->
-    <EditText
-        android:id="@+id/editTextHeight"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Height (cm)"
-        android:inputType="numberDecimal"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAge"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <!-- EditText for Weight -->
-    <EditText
-        android:id="@+id/editTextWeight"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Weight (kg)"
-        android:inputType="numberDecimal"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/editTextHeight"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0" />
 
-    <!-- EditText for Allergens -->
-    <EditText
-        android:id="@+id/editTextAllergens"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Allergens (optional)"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/editTextWeight"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0" />
 
-    <!-- Spinner for Activity Level -->
-    <Spinner
-        android:id="@+id/spinnerActivityLevel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:entries="@array/activity_levels"
-        android:prompt="@string/activity_level_prompt"
-        android:padding="12dp"
-        android:background="@drawable/spinner_background"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAllergens"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0" />
+            <!-- Age Label and Input -->
+            <TextView
+                android:id="@+id/labelAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Age"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="16dp" />
 
-    <!-- Spinner for Goal -->
-    <Spinner
-        android:id="@+id/spinnerGoal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/spinner_background"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerActivityLevel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0" />
+            <EditText
+                android:id="@+id/editTextAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your age"
+                android:inputType="number"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_background"
+                android:layout_marginTop="8dp" />
 
-    <!-- EditText for Weight Goal -->
-    <EditText
-        android:id="@+id/editTextWeightGoal"
-        android:hint="Enter your weight goal"
-        android:inputType="numberDecimal"
-        android:enabled="false"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/edit_text_background"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerGoal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0" />
+            <!-- Height Label and Input -->
+            <TextView
+                android:id="@+id/labelHeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Height (cm)"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="16dp" />
 
-    <!-- Spinner for Weekly Weight Change -->
-    <Spinner
-        android:id="@+id/spinnerWeeklyWeightChange"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:background="@drawable/spinner_background"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/editTextWeightGoal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0" />
+            <EditText
+                android:id="@+id/editTextHeight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your height"
+                android:inputType="numberDecimal"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_background"
+                android:layout_marginTop="8dp" />
 
-    <!-- Button to Save Profile -->
-    <Button
-        android:id="@+id/buttonSaveProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Profile"
-        android:textColor="@android:color/white"
-        android:backgroundTint="#57BF2A"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerWeeklyWeightChange"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0" />
+            <!-- Weight Label and Input -->
+            <TextView
+                android:id="@+id/labelWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weight (kg)"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="16dp" />
 
-    <!-- Loading TextView -->
-    <TextView
-        android:id="@+id/loadingTextView"
-        android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editTextWeight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your weight"
+                android:inputType="numberDecimal"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_background"
+                android:layout_marginTop="8dp" />
+
+            <!-- Allergens Label and Input -->
+            <TextView
+                android:id="@+id/labelAllergens"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Allergens"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="16dp" />
+
+            <EditText
+                android:id="@+id/editTextAllergens"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter allergens"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_background"
+                android:layout_marginTop="8dp" />
+
+            <!-- Activity Level Label and Spinner -->
+            <TextView
+                android:id="@+id/labelActivityLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Activity Level"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="16dp" />
+
+            <Spinner
+                android:id="@+id/spinnerActivityLevel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:background="@drawable/spinner_background"
+                android:layout_marginTop="8dp" />
+
+            <!-- Goal Label and Spinner -->
+            <TextView
+                android:id="@+id/labelGoal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weight Goal"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="16dp" />
+
+            <Spinner
+                android:id="@+id/spinnerGoal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:background="@drawable/spinner_background"
+                android:layout_marginTop="8dp" />
+
+            <!-- Weight Goal Label and Input -->
+            <TextView
+                android:id="@+id/labelWeightGoal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Desired Weight"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="16dp" />
+
+            <EditText
+                android:id="@+id/editTextWeightGoal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your weight goal"
+                android:inputType="numberDecimal"
+                android:enabled="false"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_background"
+                android:layout_marginTop="8dp" />
+
+            <!-- Weekly Weight Change Label and Spinner -->
+            <TextView
+                android:id="@+id/labelWeeklyWeightChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weekly Weight Change"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="16dp" />
+
+            <Spinner
+                android:id="@+id/spinnerWeeklyWeightChange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:background="@drawable/spinner_background"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Button Container for Back and Save Buttons -->
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Re-calculating and updating..."
-        android:visibility="gone"
-        android:layout_gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSaveProfile"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        android:layout_marginTop="24dp"/>
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp">
+
+        <!-- Back Button -->
+        <Button
+            android:id="@+id/buttonBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#FF5722"
+            android:layout_marginEnd="30dp" />
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/buttonSaveProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Profile"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#57BF2A" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

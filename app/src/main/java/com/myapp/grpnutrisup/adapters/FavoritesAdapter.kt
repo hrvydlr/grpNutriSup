@@ -38,14 +38,14 @@ class FavoritesAdapter(private var favoriteFoodItems: List<Food>) :
         holder.foodNameTextView.text = foodItem.food_name
         holder.foodDescriptionTextView.text = foodItem.food_desc
         holder.foodCaloriesTextView.text = "Calories: ${foodItem.calories}"
-        holder.foodCarbsTextView.text = "Carbohydrates: ${foodItem.carbohydrate}g"
+        holder.foodCarbsTextView.text = "Carbohydrates: ${foodItem.carbohydrates}"
         holder.foodProteinsTextView.text = "Proteins: ${foodItem.proteins}g"
         holder.foodFatsTextView.text = "Fats: ${foodItem.fat}g"
         holder.foodAllergenTextView.text = "Allergens: ${foodItem.allergens}"
 
         // Load food image
         Glide.with(holder.itemView.context)
-            .load(foodItem.imageUrl)
+            .load(foodItem.image_url)
             .placeholder(R.drawable.placeholder_image)
             .into(holder.foodImageView)
 

@@ -17,15 +17,16 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var editTextHeight: EditText
     private lateinit var editTextWeight: EditText
     private lateinit var editTextAllergens: EditText
-    private lateinit var editTextWeightGoal: EditText // New weight goal field
+    private lateinit var editTextWeightGoal: EditText
     private lateinit var spinnerGoal: Spinner
     private lateinit var spinnerWeeklyWeightChange: Spinner
-    private lateinit var spinnerActivityLevel: Spinner  // New spinner for activity level
+    private lateinit var spinnerActivityLevel: Spinner
     private lateinit var buttonSaveProfile: Button
+    private lateinit var buttonBack: Button  // Declare back button
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private var gender: String = "male"  // Default to male, but this will be fetched from Firestore
+    private var gender: String = "male"
     private lateinit var loadingDialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,11 +42,12 @@ class EditProfileActivity : AppCompatActivity() {
         editTextHeight = findViewById(R.id.editTextHeight)
         editTextWeight = findViewById(R.id.editTextWeight)
         editTextAllergens = findViewById(R.id.editTextAllergens)
-        editTextWeightGoal = findViewById(R.id.editTextWeightGoal) // Initialize weight goal field
+        editTextWeightGoal = findViewById(R.id.editTextWeightGoal)
         spinnerGoal = findViewById(R.id.spinnerGoal)
         spinnerWeeklyWeightChange = findViewById(R.id.spinnerWeeklyWeightChange)
-        spinnerActivityLevel = findViewById(R.id.spinnerActivityLevel)  // New spinner for activity level
+        spinnerActivityLevel = findViewById(R.id.spinnerActivityLevel)
         buttonSaveProfile = findViewById(R.id.buttonSaveProfile)
+        buttonBack = findViewById(R.id.buttonBack) // Initialize back button
 
         // Set up the loading dialog
         setupLoadingDialog()
@@ -60,6 +62,11 @@ class EditProfileActivity : AppCompatActivity() {
         buttonSaveProfile.setOnClickListener {
             saveProfileData()
         }
+
+        // Back button functionality
+        buttonBack.setOnClickListener {
+            finish() // Close the current activity and return to the previous one
+        }
     }
 
     private fun setupLoadingDialog() {
@@ -69,7 +76,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setupSpinners() {
-        val goals = arrayOf("Maintain Weight", "Lose Weight", "Gain Weight")
+        val goals = arrayOf("Maintain", "Lose", "Gain")
         val weeklyWeightChanges = arrayOf("0.25kg", "0.5kg", "0.75kg")
         val activityLevels = arrayOf(
             "Sedentary (little or no exercise)",
@@ -129,16 +136,16 @@ class EditProfileActivity : AppCompatActivity() {
 
                         // Retrieve the allergens as a list of strings
                         val allergensList = document.get("allergens") as? List<String> ?: emptyList()
-                        // Join the list into a single string with commas
                         val allergensString = allergensList.joinToString(", ")
                         editTextAllergens.setText(allergensString)
 
-                        // Set spinner values
-                        val goal = document.getString("goal") ?: "Maintain Weight"
+                        // Fetch the user's current goal from Firestore and set spinner value
+                        val goal = document.getString("goal") ?: "Maintain"
                         val weeklyWeightChange = document.getDouble("weeklyWeightChange") ?: 0.25
                         val activityLevel = document.getString("activityLevel") ?: "Sedentary (little or no exercise)"
                         gender = document.getString("gender") ?: "male"  // Fetch gender
 
+                        // Set spinnerGoal based on the fetched goal
                         val goalIndex = (spinnerGoal.adapter as ArrayAdapter<String>).getPosition(goal)
                         spinnerGoal.setSelection(goalIndex)
 
@@ -146,12 +153,14 @@ class EditProfileActivity : AppCompatActivity() {
                         if (goal == "Maintain Weight") {
                             spinnerWeeklyWeightChange.isEnabled = false
                             editTextWeightGoal.isEnabled = false
+                            editTextWeightGoal.setText("")  // Clear weight goal
                         } else {
                             spinnerWeeklyWeightChange.isEnabled = true
                             editTextWeightGoal.isEnabled = true
                             editTextWeightGoal.setText(document.getDouble("weightGoal")?.toString() ?: "")
                         }
 
+                        // Set selection for Weekly Weight Change spinner
                         val weeklyWeightChangeIndex = when (weeklyWeightChange) {
                             0.25 -> 0
                             0.5 -> 1
@@ -160,6 +169,7 @@ class EditProfileActivity : AppCompatActivity() {
                         }
                         spinnerWeeklyWeightChange.setSelection(weeklyWeightChangeIndex)
 
+                        // Set selection for Activity Level spinner
                         val activityLevelIndex = (spinnerActivityLevel.adapter as ArrayAdapter<String>).getPosition(activityLevel)
                         spinnerActivityLevel.setSelection(activityLevelIndex)
                     }
@@ -169,6 +179,7 @@ class EditProfileActivity : AppCompatActivity() {
                 }
         }
     }
+
 
     private fun saveProfileData() {
         val userEmail = auth.currentUser?.email

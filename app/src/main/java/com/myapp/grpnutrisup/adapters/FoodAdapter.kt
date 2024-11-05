@@ -42,7 +42,7 @@ class FoodAdapter(
             foodNameTextView.text = food.food_name
             foodDescriptionTextView.text = food.food_desc
             foodCaloriesTextView.text = "Calories: ${food.calories}"
-            foodCarbsTextView.text = "Carbohydrates: ${food.carbohydrate?.takeIf { it > 0 } ?: "N/A"}"
+            foodCarbsTextView.text = "Carbohydrates: ${food.carbohydrates?.takeIf { it > 0 } ?: "N/A"}"
             foodProteinsTextView.text = "Proteins: ${food.proteins?.takeIf { it > 0 } ?: "N/A"}"
             foodFatsTextView.text = "Fats: ${food.fat?.takeIf { it > 0 } ?: "N/A"}"
             foodAllergenTextView.text = "Allergens: ${food.allergens.ifEmpty { "None" }}"
@@ -58,10 +58,10 @@ class FoodAdapter(
         )
 
         // Log the image path for debugging
-        Log.d("FoodAdapter", "Fetching image for food: ${food.food_name}, Storage Path: ${food.imageUrl}")
+        Log.d("FoodAdapter", "Fetching image for food: ${food.food_name}, Storage Path: ${food.image_url}")
 
         // Efficiently fetch and load the image from Firebase Storage
-        fetchImageUrl(food.imageUrl) { imageUrl ->
+        fetchImageUrl(food.image_url) { imageUrl ->
             Glide.with(context)
                 .load(imageUrl)
                 .placeholder(R.drawable.placeholder_image)
@@ -175,14 +175,14 @@ class FoodAdapter(
             foodNameTextView.text = food.food_name
             foodDescriptionTextView.text = food.food_desc
             foodCaloriesTextView.text = "Calories: ${food.calories}"
-            foodCarbsTextView.text = "Carbohydrates: ${food.carbohydrate?.takeIf { it > 0 } ?: "N/A"}"
+            foodCarbsTextView.text = "Carbohydrates: ${food.carbohydrates?.takeIf { it > 0 } ?: "N/A"}"
             foodProteinsTextView.text = "Proteins: ${food.proteins?.takeIf { it > 0 } ?: "N/A"}"
             foodFatsTextView.text = "Fats: ${food.fat?.takeIf { it > 0 } ?: "N/A"}"
             foodAllergenTextView.text = "Allergens: ${food.allergens.ifEmpty { "None" }}"
             foodServingSize.text = "Serving Size: ${food.serving_size.ifEmpty { "N/A" }}"
 
             // Load image
-            fetchImageUrl(food.imageUrl) { imageUrl ->
+            fetchImageUrl(food.image_url) { imageUrl ->
                 Glide.with(context).load(imageUrl)
                     .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.error_image)
