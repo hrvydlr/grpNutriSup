@@ -62,10 +62,10 @@ class HomeActivity : AppCompatActivity() {
         scheduleDailyIntakeReset()
 
         // Set up click listener for "See all favorites" TextView
-        val seeAllFavoritesTextView = findViewById<TextView>(R.id.see_all_favorites)
-        seeAllFavoritesTextView.setOnClickListener {
-            startActivity(Intent(this, FavoritesActivity::class.java))
-        }
+       // val seeAllFavoritesTextView = findViewById<TextView>(R.id.see_all_favorites)
+        //seeAllFavoritesTextView.setOnClickListener {
+            //startActivity(Intent(this, FavoritesActivity::class.java))
+       // }
     }
 
     private fun navigateToLogin() {
