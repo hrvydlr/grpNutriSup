@@ -60,12 +60,6 @@ class HomeActivity : AppCompatActivity() {
         fetchUserDataAndUpdateUI() // Fetch data first to update UI and check health status
         setupBottomNavigation()
         scheduleDailyIntakeReset()
-
-        // Set up click listener for "See all favorites" TextView
-        val seeAllFavoritesTextView = findViewById<TextView>(R.id.see_all_favorites)
-        seeAllFavoritesTextView.setOnClickListener {
-            startActivity(Intent(this, HomeActivity::class.java))
-        }
     }
 
     private fun navigateToLogin() {
