@@ -49,13 +49,13 @@ class FoodAdapter(
         }
 
         // Efficiently handle favorite state using `contains`
-        holder.favoriteButton.setImageResource(
+        /*holder.favoriteButton.setImageResource(
             if (favoriteFoodNames.contains(food.food_name)) {
                 android.R.drawable.star_big_on // Favorited icon
             } else {
                 android.R.drawable.star_big_off // Not favorited icon
             }
-        )
+        )*/
 
         // Log the image path for debugging
         Log.d("FoodAdapter", "Fetching image for food: ${food.food_name}, Storage Path: ${food.image_url}")
@@ -75,13 +75,13 @@ class FoodAdapter(
         }
 
         // Favorite button handling
-        holder.favoriteButton.setOnClickListener {
+       /* holder.favoriteButton.setOnClickListener {
             auth.currentUser?.email?.let { userEmail ->
                 toggleFavorite(userEmail, food)
             } ?: run {
                 Toast.makeText(context, "Please log in to manage favorites", Toast.LENGTH_SHORT).show()
             }
-        }
+        }*/
     }
 
     override fun getItemCount() = foodList.size
@@ -93,13 +93,13 @@ class FoodAdapter(
     }
 
     // Update favorite list efficiently
-    fun updateFavorites(newFavorites: List<String>) {
+   /* fun updateFavorites(newFavorites: List<String>) {
         favoriteFoodNames.apply {
             clear()
             addAll(newFavorites)
         }
         notifyDataSetChanged()
-    }
+    }*/
 
     // Optimized image fetching method using Firebase Storage
     private fun fetchImageUrl(storagePath: String, callback: (String) -> Unit) {
@@ -156,55 +156,57 @@ class FoodAdapter(
     // Show food details in a dialog
     private fun showFoodDetailsDialog(food: Food) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_food_details, null)
-        AlertDialog.Builder(context).apply {
+
+        // Build the AlertDialog and store it in a variable
+        val dialog = AlertDialog.Builder(context).apply {
             setView(dialogView)
+        }.create()
 
-            // Initialize dialog components
-            val foodImageView = dialogView.findViewById<ImageView>(R.id.dialogFoodImageView)
-            val foodNameTextView = dialogView.findViewById<TextView>(R.id.dialogFoodNameTextView)
-            val foodDescriptionTextView = dialogView.findViewById<TextView>(R.id.dialogFoodDescriptionTextView)
-            val foodCaloriesTextView = dialogView.findViewById<TextView>(R.id.dialogFoodCaloriesTextView)
-            val foodCarbsTextView = dialogView.findViewById<TextView>(R.id.dialogFoodCarbsTextView)
-            val foodProteinsTextView = dialogView.findViewById<TextView>(R.id.dialogFoodProteinsTextView)
-            val foodFatsTextView = dialogView.findViewById<TextView>(R.id.dialogFoodFatsTextView)
-            val foodAllergenTextView = dialogView.findViewById<TextView>(R.id.dialogFoodAllergenTextView)
-            val foodServingSize = dialogView.findViewById<TextView>(R.id.dialogFoodServingSizeTextView)
-            val eatenButton = dialogView.findViewById<Button>(R.id.dialogFoodEatenButton)
+        // Initialize dialog components
+        val foodImageView = dialogView.findViewById<ImageView>(R.id.dialogFoodImageView)
+        val foodNameTextView = dialogView.findViewById<TextView>(R.id.dialogFoodNameTextView)
+        val foodDescriptionTextView = dialogView.findViewById<TextView>(R.id.dialogFoodDescriptionTextView)
+        val foodCaloriesTextView = dialogView.findViewById<TextView>(R.id.dialogFoodCaloriesTextView)
+        val foodCarbsTextView = dialogView.findViewById<TextView>(R.id.dialogFoodCarbsTextView)
+        val foodProteinsTextView = dialogView.findViewById<TextView>(R.id.dialogFoodProteinsTextView)
+        val foodFatsTextView = dialogView.findViewById<TextView>(R.id.dialogFoodFatsTextView)
+        val foodAllergenTextView = dialogView.findViewById<TextView>(R.id.dialogFoodAllergenTextView)
+        val foodServingSize = dialogView.findViewById<TextView>(R.id.dialogFoodServingSizeTextView)
+        val eatenButton = dialogView.findViewById<Button>(R.id.dialogFoodEatenButton)
 
-            // Set dialog values
-            foodNameTextView.text = food.food_name
-            foodDescriptionTextView.text = food.food_desc
-            foodCaloriesTextView.text = "Calories: ${food.calories}"
-            foodCarbsTextView.text = "Carbohydrates: ${food.carbohydrates?.takeIf { it > 0 } ?: "N/A"}"
-            foodProteinsTextView.text = "Proteins: ${food.proteins?.takeIf { it > 0 } ?: "N/A"}"
-            foodFatsTextView.text = "Fats: ${food.fat?.takeIf { it > 0 } ?: "N/A"}"
-            foodAllergenTextView.text = "Allergens: ${food.allergens.ifEmpty { "None" }}"
-            foodServingSize.text = "Serving Size: ${food.serving_size.ifEmpty { "N/A" }}"
+        // Set dialog values
+        foodNameTextView.text = food.food_name
+        foodDescriptionTextView.text = food.food_desc
+        foodCaloriesTextView.text = "Calories: ${food.calories}"
+        foodCarbsTextView.text = "Carbohydrates: ${food.carbohydrates?.takeIf { it > 0 } ?: "N/A"}"
+        foodProteinsTextView.text = "Proteins: ${food.proteins?.takeIf { it > 0 } ?: "N/A"}"
+        foodFatsTextView.text = "Fats: ${food.fat?.takeIf { it > 0 } ?: "N/A"}"
+        foodAllergenTextView.text = "Allergens: ${food.allergens.ifEmpty { "None" }}"
+        foodServingSize.text = "Serving Size: ${food.serving_size.ifEmpty { "N/A" }}"
 
-            // Load image
-            fetchImageUrl(food.image_url) { imageUrl ->
-                Glide.with(context).load(imageUrl)
-                    .placeholder(R.drawable.placeholder_image)
-                    .error(R.drawable.error_image)
-                    .into(foodImageView)
-            }
-
-            // Handle 'Eaten' button click
-            eatenButton.setOnClickListener {
-                auth.currentUser?.email?.let { userEmail ->
-                    updateIntakes(userEmail, food.calories, food.proteins ?: 0, food.fat ?: 0)
-                } ?: run {
-                    Toast.makeText(context, "Please log in to track your intake", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            // Build and show the dialog
-            setPositiveButton("Close", null).create().show()
+        // Load image
+        fetchImageUrl(food.image_url) { imageUrl ->
+            Glide.with(context).load(imageUrl)
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.error_image)
+                .into(foodImageView)
         }
+
+        // Handle 'Eaten' button click
+        eatenButton.setOnClickListener {
+            auth.currentUser?.email?.let { userEmail ->
+                updateIntakes(userEmail, food.calories, food.proteins ?: 0, food.fat ?: 0, dialog)
+            } ?: run {
+                Toast.makeText(context, "Please log in to track your intake", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Show the dialog
+        dialog.show()
     }
 
-    // Update user's calorie, protein, and fat intake
-    private fun updateIntakes(userEmail: String, calories: Int, proteins: Int, fats: Int) {
+    // Update user's calorie, protein, and fat intake and close dialog upon completion
+    private fun updateIntakes(userEmail: String, calories: Int, proteins: Int, fats: Int, dialog: AlertDialog) {
         val userRef = db.collection("users").document(userEmail)
 
         userRef.get().addOnSuccessListener { document ->
@@ -220,6 +222,10 @@ class FoodAdapter(
                     "fatIntake" to updatedFats
                 )).addOnSuccessListener {
                     Toast.makeText(context, "Intake updated!", Toast.LENGTH_SHORT).show()
+
+                    // Close the dialog after updating
+                    dialog.dismiss()
+
                 }.addOnFailureListener {
                     Toast.makeText(context, "Failed to update intake", Toast.LENGTH_SHORT).show()
                 }
@@ -229,8 +235,9 @@ class FoodAdapter(
         }
     }
 
-    // ViewHolder pattern optimized
-    class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    // ViewHolder class to represent each food item
+    inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val foodImageView: ImageView = itemView.findViewById(R.id.foodImageView)
         val foodNameTextView: TextView = itemView.findViewById(R.id.foodNameTextView)
         val foodDescriptionTextView: TextView = itemView.findViewById(R.id.foodDescriptionTextView)
         val foodCaloriesTextView: TextView = itemView.findViewById(R.id.foodCaloriesTextView)
@@ -238,7 +245,6 @@ class FoodAdapter(
         val foodProteinsTextView: TextView = itemView.findViewById(R.id.foodProteinsTextView)
         val foodFatsTextView: TextView = itemView.findViewById(R.id.foodFatsTextView)
         val foodAllergenTextView: TextView = itemView.findViewById(R.id.foodAllergenTextView)
-        val foodImageView: ImageView = itemView.findViewById(R.id.foodImageView)
-        val favoriteButton: ImageButton = itemView.findViewById(R.id.favouriteButton)
+        //val favoriteButton: ImageButton = itemView.findViewById(R.id.favouriteButton)
     }
 }

@@ -1,79 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- res/layout/activity_signup.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height= "wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
+
+        <!-- Logo Image -->
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/logo"
-            android:layout_marginTop="20dp"/>
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            app:srcCompat="@drawable/nutrisupp_logo" />
+
+        <!-- Email Input -->
         <EditText
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:background = "@drawable/otherbtn"
-            android:padding="18dp"/>
+            android:background="@drawable/otherbtn"
+            android:padding="18dp"
+            android:layout_marginTop="16dp" />
 
+        <!-- Email Error Message -->
+        <TextView
+            android:id="@+id/textViewEmailError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:layout_marginTop="4dp" />
+
+        <!-- Password Input -->
         <EditText
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
             android:inputType="textPassword"
-            android:layout_below="@id/editTextEmail"
-            android:layout_marginTop="16dp"
-            android:background = "@drawable/otherbtn"
-            android:padding="18dp"/>
+            android:background="@drawable/otherbtn"
+            android:padding="18dp"
+            android:layout_marginTop="12dp" />
 
+        <!-- Password Error Message -->
+        <TextView
+            android:id="@+id/textViewPasswordError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:layout_marginTop="4dp" />
+
+        <!-- Confirm Password Input -->
         <EditText
             android:id="@+id/editTextConfirmPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Confirm Password"
             android:inputType="textPassword"
-            android:layout_below="@id/editTextPassword"
-            android:layout_marginTop="16dp"
-            android:background = "@drawable/otherbtn"
-            android:padding="18dp"/>
+            android:background="@drawable/otherbtn"
+            android:padding="18dp"
+            android:layout_marginTop="12dp" />
 
+        <!-- Confirm Password Error Message -->
+        <TextView
+            android:id="@+id/textViewConfirmPasswordError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:layout_marginTop="4dp" />
+
+        <!-- Sign Up Button -->
         <Button
             android:id="@+id/buttonSignup"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Sign Up"
-            android:layout_below="@id/editTextConfirmPassword"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="#57BF2A"/>
+            android:textColor="@android:color/white"
+            android:backgroundTint="#57BF2A"
+            android:layout_marginTop="20dp" />
 
+        <!-- OR Separator -->
         <TextView
             android:id="@+id/textView"
-            android:layout_width="40dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="OR"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:textSize="14sp"
+            android:layout_gravity="center" />
 
+        <!-- Login Button -->
         <Button
             android:id="@+id/buttonLogin"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
             android:text="Login"
-            android:layout_below="@id/buttonSignup"
-            android:layout_marginTop="16dp"
-            android:backgroundTint= "#F4D35E" />
-
+            android:textColor="@android:color/black"
+            android:backgroundTint="#F4D35E"
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 

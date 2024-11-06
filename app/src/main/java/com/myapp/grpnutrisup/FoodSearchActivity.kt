@@ -51,7 +51,11 @@ class FoodSearchActivity : AppCompatActivity() {
         recyclerViewFoods = findViewById(R.id.recyclerViewFoods)
         progressBar = findViewById(R.id.progressBar)
         emptyMessage = findViewById(R.id.emptyMessage)
+
+        // Set up the RecyclerView layout manager and add spacing decoration
         recyclerViewFoods.layoutManager = LinearLayoutManager(this)
+        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.recycler_view_item_spacing)
+        recyclerViewFoods.addItemDecoration(SpacingItemDecoration(spacingInPixels))
 
         findViewById<ImageButton>(R.id.clear_button).setOnClickListener {
             autoCompleteTextView.text.clear()
