@@ -8,17 +8,19 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.work.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.random.Random
 import java.util.*
 import java.util.concurrent.TimeUnit
+import androidx.work.*
 
+// Suppress deprecation warnings due to usage of old APIs
 @Suppress("DEPRECATION")
 class HomeActivity : AppCompatActivity() {
 
+    // Declare variables for the meal-related views
     private lateinit var greetingTextView: TextView
     private lateinit var caloriesValueTextView: TextView
     private lateinit var caloriesProgressBar: ProgressBar
@@ -26,27 +28,23 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var fatsValueTextView: TextView
     private lateinit var bottomNavigation: BottomNavigationView
 
+    // Firebase auth and Firestore references
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
 
-    private var hasHealthComplication = false // Track health complication status
+    // Views for displaying meal selections
+    private lateinit var breakfastView: TextView
+    private lateinit var lunchView: TextView
+    private lateinit var dinnerView: TextView
 
+    // Variable to track health complication status
+    private var hasHealthComplication = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        // Initialize Firebase authentication
-        auth = FirebaseAuth.getInstance()
-
-        // Check if the user is logged in. If not, redirect to LoginActivity.
-        if (auth.currentUser == null) {
-            // User is not logged in, navigate to LoginActivity
-            navigateToLogin()
-            return
-        }
-
-        // Continue with fetching data and setting up UI
+        // Initialize views
         greetingTextView = findViewById(R.id.greeting)
         caloriesValueTextView = findViewById(R.id.calories_value)
         caloriesProgressBar = findViewById(R.id.calories_progress)
@@ -54,20 +52,76 @@ class HomeActivity : AppCompatActivity() {
         fatsValueTextView = findViewById(R.id.fats_value)
         bottomNavigation = findViewById(R.id.bottom_navigation)
 
-        // Initialize Firestore
+        // Initialize new meal-related views
+        breakfastView = findViewById(R.id.breakfastView)
+        lunchView = findViewById(R.id.lunchView)
+        dinnerView = findViewById(R.id.dinnerView)
+
+        // Initialize Firebase auth and Firestore
+        auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        fetchUserDataAndUpdateUI() // Fetch data first to update UI and check health status
+        // Fetch user data and update UI
+        fetchUserDataAndUpdateUI()
         setupBottomNavigation()
+
+        // Fetch food selections and update meal views
+        fetchMealSelectionsAndDisplay()
+
+        // Schedule daily intake reset worker
         scheduleDailyIntakeReset()
     }
+
+    private fun fetchMealSelectionsAndDisplay() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            val userId = user.uid
+            val userFoodSelectionsRef = firestore.collection("daily_food_selections").document(userId)
+
+            // Fetch the food selections for each meal (Breakfast, Lunch, Dinner)
+            userFoodSelectionsRef.get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // Log the entire document data to inspect it
+                        Log.d("HomeActivity", "Fetched document data: ${document.data}")
+
+                        // Retrieve food arrays from Firestore document (assuming food items are objects with a "food_name" field)
+                        val breakfastList = document.get("Breakfast") as? List<Map<String, Any>> ?: listOf()
+                        val lunchList = document.get("Lunch") as? List<Map<String, Any>> ?: listOf()
+                        val dinnerList = document.get("Dinner") as? List<Map<String, Any>> ?: listOf()
+
+                        // Extract only the "food_name" for each item in the list
+                        val breakfastFoodNames = breakfastList.map { it["food_name"] as? String ?: "No food selected" }
+                        val lunchFoodNames = lunchList.map { it["food_name"] as? String ?: "No food selected" }
+                        val dinnerFoodNames = dinnerList.map { it["food_name"] as? String ?: "No food selected" }
+
+                        // Join the food names into a single string, with each name separated by a comma
+                        val breakfastText = "${breakfastFoodNames.joinToString(", ")}"
+                        val lunchText = "${lunchFoodNames.joinToString(", ")}"
+                        val dinnerText = "${dinnerFoodNames.joinToString(", ")}"
+
+                        // Update the TextViews with the food names
+                        breakfastView.text = breakfastText
+                        lunchView.text = lunchText
+                        dinnerView.text = dinnerText
+                    } else {
+                        Log.d("HomeActivity", "No food selection document found for user $userId")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("HomeActivity", "Failed to get food selections", exception)
+                }
+        }
+    }
+
+
+
 
     private fun navigateToLogin() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish() // Close the current activity to prevent users from going back to it
     }
-
 
     private fun setupBottomNavigation() {
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
@@ -185,9 +239,7 @@ class HomeActivity : AppCompatActivity() {
 
         dialog.show()
     }
-
 }
-
 
 // Worker class to reset calorie, protein, and fats intake
 class ResetIntakeWorker(appContext: android.content.Context, workerParams: WorkerParameters) :
