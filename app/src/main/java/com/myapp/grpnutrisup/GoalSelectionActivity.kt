@@ -30,7 +30,7 @@ class GoalSelectionActivity : AppCompatActivity() {
 
         // Set up click listeners
         buttonMaintainWeight.setOnClickListener {
-            handleGoalSelection("Maintain Weight")
+            handleGoalSelection("Maintain")
         }
 
         buttonLoseWeight.setOnClickListener {

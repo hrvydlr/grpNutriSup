@@ -64,7 +64,7 @@ class HomeActivity : AppCompatActivity() {
         // Set up click listener for "See all favorites" TextView
         val seeAllFavoritesTextView = findViewById<TextView>(R.id.see_all_favorites)
         seeAllFavoritesTextView.setOnClickListener {
-            startActivity(Intent(this, FavoritesActivity::class.java))
+            startActivity(Intent(this, HomeActivity::class.java))
         }
     }
 
