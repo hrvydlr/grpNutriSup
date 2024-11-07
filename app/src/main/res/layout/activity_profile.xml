@@ -5,16 +5,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF8E3"
+    android:background="#F8F4EE"
     tools:context=".ProfileActivity"
-    android:padding="16dp">
+    android:padding="0dp">
 
     <!-- Card View that holds the user's profile details -->
     <androidx.cardview.widget.CardView
         android:id="@+id/profileCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="20dp"
+        android:layout_marginTop="20dp"
         android:padding="16dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="8dp"
@@ -34,6 +35,8 @@
                 android:text="Profile Information"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="8dp"
                 android:paddingBottom="16dp"
                 android:textColor="@android:color/black" />
 
@@ -47,7 +50,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Age:"
+                    android:text="Age: "
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:padding="8dp" />
@@ -71,7 +74,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Height:"
+                    android:text="Height: "
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:padding="8dp" />
@@ -95,7 +98,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Weight:"
+                    android:text="Weight: "
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:padding="8dp" />
@@ -119,7 +122,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Allergens:"
+                    android:text="Allergens: "
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:padding="8dp" />
@@ -143,7 +146,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Goal:"
+                    android:text="Goal: "
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:padding="8dp" />
@@ -167,7 +170,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Weekly Weight Change:"
+                    android:text="Weekly Weight Change: "
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:padding="8dp" />
@@ -182,6 +185,7 @@
             </LinearLayout>
 
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
     <!-- Button Layout -->
@@ -194,14 +198,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="28dp">
 
     <!-- Change Profile Button -->
     <Button
         android:id="@+id/buttonChangeProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="25dp"
         android:backgroundTint="#57BF2A"
         android:text="Edit Profile"
         android:textColor="@android:color/white" />
@@ -222,7 +226,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="#FFFFFF"
+        android:background="#5CC92D"
         android:elevation="8dp"
         app:itemIconTint="@color/bottom_nav_color_selector"
         app:itemTextColor="@color/bottom_nav_color_selector"

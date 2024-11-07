@@ -5,7 +5,7 @@
 
     <ImageView
         android:id="@+id/dialogFoodImageView"
-        android:layout_width="150dp"
+        android:layout_width="230dp"
         android:layout_height="150dp"
         android:layout_centerHorizontal="true"
         android:scaleType="centerCrop"
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:text="Food Name"
         android:textStyle="bold"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:layout_below="@id/dialogFoodImageView"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="8dp" />
@@ -29,7 +29,7 @@
         android:text="Food Description"
         android:layout_below="@id/dialogFoodNameTextView"
         android:layout_marginBottom="8dp"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/dialogFoodCaloriesTextView"
@@ -88,6 +88,7 @@
         android:layout_below="@id/dialogFoodAllergenTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:backgroundTint="#57BF2A"/>
 
 </RelativeLayout>
