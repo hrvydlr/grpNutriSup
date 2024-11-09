@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -48,15 +47,6 @@ class FoodAdapter(
             foodAllergenTextView.text = "Allergens: ${food.allergens.ifEmpty { "None" }}"
         }
 
-        // Efficiently handle favorite state using `contains`
-        /*holder.favoriteButton.setImageResource(
-            if (favoriteFoodNames.contains(food.food_name)) {
-                android.R.drawable.star_big_on // Favorited icon
-            } else {
-                android.R.drawable.star_big_off // Not favorited icon
-            }
-        )*/
-
         // Log the image path for debugging
         Log.d("FoodAdapter", "Fetching image for food: ${food.food_name}, Storage Path: ${food.image_url}")
 
@@ -73,15 +63,6 @@ class FoodAdapter(
         holder.itemView.setOnClickListener {
             showFoodDetailsDialog(food)
         }
-
-        // Favorite button handling
-       /* holder.favoriteButton.setOnClickListener {
-            auth.currentUser?.email?.let { userEmail ->
-                toggleFavorite(userEmail, food)
-            } ?: run {
-                Toast.makeText(context, "Please log in to manage favorites", Toast.LENGTH_SHORT).show()
-            }
-        }*/
     }
 
     override fun getItemCount() = foodList.size
@@ -91,15 +72,6 @@ class FoodAdapter(
         foodList = newList
         notifyDataSetChanged()
     }
-
-    // Update favorite list efficiently
-   /* fun updateFavorites(newFavorites: List<String>) {
-        favoriteFoodNames.apply {
-            clear()
-            addAll(newFavorites)
-        }
-        notifyDataSetChanged()
-    }*/
 
     // Optimized image fetching method using Firebase Storage
     private fun fetchImageUrl(storagePath: String, callback: (String) -> Unit) {
@@ -116,44 +88,7 @@ class FoodAdapter(
         }
     }
 
-    // Method to toggle favorites more efficiently
-    private fun toggleFavorite(userEmail: String, food: Food) {
-        val userFavoritesRef = db.collection("users").document(userEmail)
-
-        userFavoritesRef.get().addOnSuccessListener { documentSnapshot ->
-            val favoriteFoods = documentSnapshot.get("favoriteFoods") as? MutableList<String> ?: mutableListOf()
-
-            if (favoriteFoods.contains(food.food_name)) {
-                // Remove from favorites
-                favoriteFoods.remove(food.food_name)
-                userFavoritesRef.update("favoriteFoods", favoriteFoods)
-                    .addOnSuccessListener {
-                        favoriteFoodNames.remove(food.food_name)
-                        notifyItemChanged(foodList.indexOf(food))
-                        Toast.makeText(context, "${food.food_name} removed from favorites", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(context, "Failed to remove favorite", Toast.LENGTH_SHORT).show()
-                    }
-            } else {
-                // Add to favorites
-                favoriteFoods.add(food.food_name)
-                userFavoritesRef.update("favoriteFoods", favoriteFoods)
-                    .addOnSuccessListener {
-                        favoriteFoodNames.add(food.food_name)
-                        notifyItemChanged(foodList.indexOf(food))
-                        Toast.makeText(context, "${food.food_name} added to favorites", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(context, "Failed to add favorite", Toast.LENGTH_SHORT).show()
-                    }
-            }
-        }.addOnFailureListener {
-            Toast.makeText(context, "Failed to retrieve user favorites", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // Show food details in a dialog
+    // Show food details in a dialog and handle marking food as eaten
     private fun showFoodDetailsDialog(food: Food) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_food_details, null)
 
@@ -195,6 +130,7 @@ class FoodAdapter(
         // Handle 'Eaten' button click
         eatenButton.setOnClickListener {
             auth.currentUser?.email?.let { userEmail ->
+                saveFoodEaten(userEmail, food) // Save eaten food to Firestore
                 updateIntakes(userEmail, food.calories, food.proteins ?: 0, food.fat ?: 0, dialog)
             } ?: run {
                 Toast.makeText(context, "Please log in to track your intake", Toast.LENGTH_SHORT).show()
@@ -203,6 +139,32 @@ class FoodAdapter(
 
         // Show the dialog
         dialog.show()
+    }
+
+    // Save food eaten details to Firestore
+    private fun saveFoodEaten(userEmail: String, food: Food) {
+        val userEatenFoodsRef = db.collection("users").document(userEmail).collection("eatenFoods")
+
+        // Create a map of the food details with a timestamp
+        val eatenFood = mapOf(
+            "food_name" to food.food_name,
+            "food_desc" to food.food_desc,
+            "calories" to food.calories,
+            "carbohydrates" to food.carbohydrates,
+            "proteins" to food.proteins,
+            "fat" to food.fat,
+            "allergens" to food.allergens,
+            "timestamp" to com.google.firebase.Timestamp.now()
+        )
+
+        // Add the eaten food entry to the user's "eatenFoods" collection
+        userEatenFoodsRef.add(eatenFood)
+            .addOnSuccessListener {
+                Toast.makeText(context, "${food.food_name} marked as eaten", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Failed to save eaten food", Toast.LENGTH_SHORT).show()
+            }
     }
 
     // Update user's calorie, protein, and fat intake and close dialog upon completion
@@ -237,7 +199,6 @@ class FoodAdapter(
 
     // ViewHolder class to represent each food item
     inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val foodImageView: ImageView = itemView.findViewById(R.id.foodImageView)
         val foodNameTextView: TextView = itemView.findViewById(R.id.foodNameTextView)
         val foodDescriptionTextView: TextView = itemView.findViewById(R.id.foodDescriptionTextView)
         val foodCaloriesTextView: TextView = itemView.findViewById(R.id.foodCaloriesTextView)
@@ -245,6 +206,6 @@ class FoodAdapter(
         val foodProteinsTextView: TextView = itemView.findViewById(R.id.foodProteinsTextView)
         val foodFatsTextView: TextView = itemView.findViewById(R.id.foodFatsTextView)
         val foodAllergenTextView: TextView = itemView.findViewById(R.id.foodAllergenTextView)
-        //val favoriteButton: ImageButton = itemView.findViewById(R.id.favouriteButton)
+        val foodImageView: ImageView = itemView.findViewById(R.id.foodImageView)
     }
 }
