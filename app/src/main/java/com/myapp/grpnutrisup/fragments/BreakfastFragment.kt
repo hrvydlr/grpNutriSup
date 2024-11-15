@@ -24,7 +24,7 @@ class BreakfastFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    // List of food names to exclude
+    // List of food names to exclude (no longer used)
     private val excludedFoodNames = listOf("Rice", "Half Rice", "Half Fried Rice", "Fried Rice", "Sinangag")
 
     override fun onCreateView(
@@ -93,28 +93,34 @@ class BreakfastFragment : Fragment() {
         val userId = auth.currentUser?.uid ?: return
         val userFoodSelectionsRef = db.collection("daily_food_selections").document(userId)
 
+        // Fetch all food items for the given meal type and goal
         db.collection("food_db")
-            .whereEqualTo("meal_type", mealType)
-            .whereEqualTo("goal_type", userGoal)
+            .whereEqualTo("meal_type", mealType)  // Get all foods for breakfast
+            .whereEqualTo("goal_type", userGoal)  // Filter by goal type
             .get()
             .addOnSuccessListener { result ->
+
+                // Filter foods based on allergens (and any other criteria if needed)
                 val foods = result.mapNotNull { document ->
                     document.toObject(Food::class.java).takeIf { food ->
                         allergens.none { allergen ->
                             food.allergens.contains(allergen, ignoreCase = true)
-                        } && food.food_name !in excludedFoodNames
+                        }
                     }
                 }
 
-                // Select 4 foods randomly
-                val selectedFoods = foods.shuffled().take(4)
-
-                // Save selection with today's date
+                // Ensure we always get a random selection each day
                 val currentDate = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+                val selectedFoods = foods.shuffled().take(4)  // Take 4 random foods
+
+                // Save the selected foods in Firestore with today's date
                 val foodData = selectedFoods.map { it.toHashMap() }
                 val updateData = mapOf("date" to currentDate, mealType to foodData)
 
+                // Save the food selection for today
                 userFoodSelectionsRef.set(updateData, SetOptions.merge())
+
+                // Call the callback to update the UI
                 callback(selectedFoods)
             }
             .addOnFailureListener { e ->

@@ -1,65 +1,54 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- item_meal_history.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:background="?android:attr/selectableItemBackground"
-    android:paddingBottom="16dp">
+    android:padding="16dp"
+    android:elevation="6dp" >
 
+
+    <!-- Text views for food details -->
     <TextView
         android:id="@+id/foodNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Food Name"
-        android:textSize="18sp"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@android:color/black" />
-
-    <TextView
-        android:id="@+id/timestampTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Date and Time"
-        android:textSize="14sp"
-        android:layout_marginTop="4dp"
-        android:textColor="@android:color/darker_gray" />
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/caloriesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Calories: "
-        android:textSize="14sp"
-        android:layout_marginTop="8dp" />
+        android:text="Calories: 0"/>
 
     <TextView
         android:id="@+id/carbsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Carbohydrates: "
-        android:textSize="14sp" />
+        android:text="Carbohydrates: 0"/>
 
     <TextView
         android:id="@+id/proteinsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Proteins: "
-        android:textSize="14sp" />
+        android:text="Proteins: 0"/>
 
     <TextView
         android:id="@+id/fatsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fats: "
-        android:textSize="14sp" />
+        android:text="Fats: 0"/>
 
     <TextView
         android:id="@+id/allergensTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Allergens: "
-        android:textSize="14sp"
-        android:layout_marginBottom="8dp" />
+        android:text="Allergens: None"/>
 
+    <TextView
+        android:id="@+id/timestampTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timestamp"/>
 </LinearLayout>

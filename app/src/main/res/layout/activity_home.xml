@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8F4EE">
@@ -9,7 +8,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="370dp"
+        android:layout_width="390dp"
         android:layout_height="220dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="4dp"
@@ -25,6 +24,13 @@
             android:layout_margin="0dp"
             android:scaleType="centerCrop"
             android:src="@drawable/banner" />
+
+        <ImageButton
+            android:id="@+id/historyButton"
+            android:layout_width="53dp"
+            android:layout_height="74dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/_26655_history_icon" />
 
     </androidx.cardview.widget.CardView>
 
@@ -80,9 +86,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="No food selected"
-                    android:textColor="#000000"
-                    android:textSize="14sp"
                     android:ellipsize="end"
                     android:maxLines="1" />
             </LinearLayout>
@@ -107,7 +110,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="No food selected"
+                    android:text=" "
                     android:textColor="#000000"
                     android:textSize="14sp"
                     android:ellipsize="end"
@@ -133,11 +136,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="No food selected"
-                    android:textColor="#000000"
-                    android:textSize="14sp"
+                    android:text=" "
                     android:ellipsize="end"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -156,6 +159,7 @@
         app:layout_constraintTop_toBottomOf="@id/cardView2">
 
         <LinearLayout
+            android:id="@+id/yourProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

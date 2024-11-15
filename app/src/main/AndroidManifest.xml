@@ -31,6 +31,7 @@
         <activity android:name=".FoodSearchActivity" />
         <activity android:name=".MealActivity"/>
         <activity android:name=".MealHistoryActivity"/>
+        <activity android:name=".activities.IntakeHistoryActivity"/>
 
 
 
