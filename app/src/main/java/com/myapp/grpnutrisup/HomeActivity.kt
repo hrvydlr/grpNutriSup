@@ -16,7 +16,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 import java.util.concurrent.TimeUnit
 import androidx.work.*
-import com.myapp.grpnutrisup.activities.IntakeHistoryActivity
 
 @Suppress("DEPRECATION")
 class HomeActivity : AppCompatActivity() {
