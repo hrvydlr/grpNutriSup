@@ -8,7 +8,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="390dp"
+        android:layout_width="400dp"
         android:layout_height="220dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="4dp"
@@ -27,9 +27,11 @@
 
         <ImageButton
             android:id="@+id/historyButton"
-            android:layout_width="53dp"
-            android:layout_height="74dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:scaleType="centerCrop"
+            android:background="#F8F4EE"
             app:srcCompat="@drawable/_26655_history_icon" />
 
     </androidx.cardview.widget.CardView>
