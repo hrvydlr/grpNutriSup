@@ -9,6 +9,7 @@ data class Meal(
     val proteins: Int = 0,
     val fat: Int = 0,
     val allergens: String = "",
-    val timestamp: Timestamp? = null
+    val timestamp: Timestamp? = null,
+    val calorieGoalforTomorrow: Int = 0
 
 )

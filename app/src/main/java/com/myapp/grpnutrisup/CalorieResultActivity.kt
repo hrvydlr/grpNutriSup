@@ -1,6 +1,6 @@
 package com.myapp.grpnutrisup
 
-import android.content.Intent // <-- Import this for startActivity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -33,12 +33,12 @@ class CalorieResultActivity : AppCompatActivity() {
         // Display the calorie result
         textViewCalorieResult.text = "Your daily calorie requirement is: $calorieResult kcal"
 
-        // Save the calorie result to Firestore
+        // Save the calorie result to Firestore with additional fields
         saveCalorieResult(calorieResult)
 
         // Set click listener for the "Next" button
         buttonNext.setOnClickListener {
-            // Navigate to MainActivity
+            // Navigate to HomeActivity
             val intent = Intent(this@CalorieResultActivity, HomeActivity::class.java)
             startActivity(intent)
             finish() // Optionally, close the current activity to prevent returning to it
@@ -51,16 +51,24 @@ class CalorieResultActivity : AppCompatActivity() {
             val userEmail = user.email
 
             if (userEmail != null) {
-                // Create a map to hold the calorie result
+                // Calculate remaining calories and set calorie goals for today and tomorrow
+                val remainingCalories = calorieResult // Initial remaining calories could be the calorie result itself
+                val calorieGoalForToday = calorieResult // Goal for today, it can be adjusted dynamically based on other factors
+                val calorieGoalForTomorrow = calorieResult // Similarly, tomorrow's goal can be the same or adjusted
+
+                // Create a map to hold the calorie result and additional data
                 val calorieData: Map<String, Any> = hashMapOf(
-                    "calorieResult" to calorieResult
+                    "calorieResult" to calorieResult,
+                    "remainingCalories" to remainingCalories,
+                    "calorieGoalForToday" to calorieGoalForToday,
+                    "calorieGoalForTomorrow" to calorieGoalForTomorrow
                 )
 
-                // Save the calorie result to the user's document in Firestore using the email as the document ID
+                // Save the calorie result and other fields to the user's document in Firestore
                 db.collection("users").document(userEmail)
                     .update(calorieData)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Calorie result saved successfully!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Calorie result and goals saved successfully!", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener { e ->
                         Toast.makeText(this, "Failed to save calorie result: ${e.message}", Toast.LENGTH_SHORT).show()

@@ -61,7 +61,6 @@ class HomeActivity : AppCompatActivity() {
         // Set up functionalities
         setupHistoryButtonClickListener()
         setupBottomNavigation()
-        setupCardViewClickListener()
 
         fetchUserDataAndUpdateUI()
         fetchMealSelectionsAndDisplay()
@@ -70,7 +69,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupHistoryButtonClickListener() {
         historyButton.setOnClickListener {
-            val intent = Intent(this, IntakeHistoryActivity::class.java)
+            val intent = Intent(this, MealHistoryActivity::class.java)
             startActivity(intent)
         }
     }
@@ -100,13 +99,6 @@ class HomeActivity : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Log.d("HomeActivity", "Failed to get food selections", exception)
                 }
-        }
-    }
-
-    private fun setupCardViewClickListener() {
-        cardView4.setOnClickListener {
-            val intent = Intent(this, MealHistoryActivity::class.java)
-            startActivity(intent)
         }
     }
 

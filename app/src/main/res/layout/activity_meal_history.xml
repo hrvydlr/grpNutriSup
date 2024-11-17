@@ -27,11 +27,31 @@
         android:textColor="@android:color/black"
         android:fontFamily="sans-serif-medium" />
 
-    <!-- RecyclerView for meal history items -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMealHistory"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp" />
+        android:layout_height="wrap_content">
+
+        <!-- Date Header -->
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date" />
+
+        <!-- Total Calories -->
+        <TextView
+            android:id="@+id/totalCaloriesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Calories" />
+
+        <!-- RecyclerView for Meals of the Day -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMeals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 
 </LinearLayout>

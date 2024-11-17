@@ -13,12 +13,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.myapp.grpnutrisup.R
 import com.myapp.grpnutrisup.adapters.MealHistoryAdapter
 import com.myapp.grpnutrisup.models.Meal
+import com.myapp.grpnutrisup.models.MealGroup
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MealHistoryActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var mealHistoryAdapter: MealHistoryAdapter
-    private val mealsList = mutableListOf<Meal>()
+    private val groupedMealsList = mutableListOf<MealGroup>()
     private val db: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
@@ -26,7 +29,7 @@ class MealHistoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meal_history)
 
-        // Set up back button with ImageButton
+        // Back Button setup
         val backButton: ImageButton = findViewById(R.id.backButton)
         backButton.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
@@ -36,8 +39,8 @@ class MealHistoryActivity : AppCompatActivity() {
         }
 
         // RecyclerView setup
-        recyclerView = findViewById(R.id.recyclerViewMealHistory)
-        mealHistoryAdapter = MealHistoryAdapter(this, mealsList)
+        recyclerView = findViewById(R.id.recyclerViewMeals)
+        mealHistoryAdapter = MealHistoryAdapter(this, groupedMealsList)
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MealHistoryActivity)
@@ -56,10 +59,23 @@ class MealHistoryActivity : AppCompatActivity() {
                 .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { querySnapshot ->
-                    mealsList.clear()
+                    val mealsMap = mutableMapOf<String, MealGroup>()
+
                     for (document in querySnapshot.documents) {
-                        document.toObject(Meal::class.java)?.let { mealsList.add(it) }
+                        val meal = document.toObject(Meal::class.java)
+                        meal?.let {
+                            // Group by date (formatted date string)
+                            val dateString = formatDate(meal.timestamp?.toDate())
+                            val group = mealsMap.getOrPut(dateString) { MealGroup(dateString) }
+
+                            // Add meal to the correct date group and sum calories
+                            group.meals.add(meal)
+                            group.totalCalories += meal.calories
+                        }
                     }
+
+                    groupedMealsList.clear()
+                    groupedMealsList.addAll(mealsMap.values.sortedByDescending { it.date })
                     mealHistoryAdapter.notifyDataSetChanged()
                 }
                 .addOnFailureListener { e ->
@@ -69,5 +85,10 @@ class MealHistoryActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Please log in to view meal history", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun formatDate(date: Date?): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return date?.let { dateFormat.format(it) } ?: ""
     }
 }

@@ -156,16 +156,27 @@ class FoodAdapter(
             if (document.exists()) {
                 resetDailyIntakeIfNeeded(userEmail, document)
 
+                // Update the calorie intake with the newly consumed calories
                 val updatedCalories = (document.get("calorieIntake") as? Long ?: 0) + calories
                 val updatedProteins = (document.get("proteinIntake") as? Long ?: 0) + proteins
                 val updatedFats = (document.get("fatIntake") as? Long ?: 0) + fats
 
+                // Calculate the new remaining calories (calorieResult - calorieIntake)
+                val calorieResult = document.getDouble("calorieResult")?.toInt() ?: 2000 // Default if not set
+                val updatedRemainingCalories = (calorieResult - updatedCalories).coerceAtLeast(0)
+
+                // Calculate calorieGoalForTomorrow using the formula: calorieResult - remainingCalories
+                val updatedCalorieGoalForTomorrow = calorieResult + updatedRemainingCalories
+
+                // Update the user's calorie intake, remaining calories, and calorie goal for tomorrow
                 userRef.update(mapOf(
                     "calorieIntake" to updatedCalories,
                     "proteinIntake" to updatedProteins,
-                    "fatIntake" to updatedFats
+                    "fatIntake" to updatedFats,
+                    "remainingCalories" to updatedRemainingCalories,
+                    "calorieGoalForTomorrow" to updatedCalorieGoalForTomorrow
                 )).addOnSuccessListener {
-                    Toast.makeText(context, "Intake updated!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Intake updated and tomorrow's goal recalculated!", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 }.addOnFailureListener {
                     Toast.makeText(context, "Failed to update intake", Toast.LENGTH_SHORT).show()
@@ -176,29 +187,34 @@ class FoodAdapter(
         }
     }
 
-    private fun resetDailyIntakeIfNeeded(userEmail: String, document: DocumentSnapshot) {
-        val lastUpdateDate = document.getString("lastUpdateDate") ?: todayDate
-        val dailyCalorieGoal = document.getDouble("calorieResult")?.toInt() ?: 2000
-        val weeklySurplus = 275 // e.g., surplus for a 0.25 kg weekly weight gain goal
-        val targetDailyCalories = dailyCalorieGoal + weeklySurplus
+    private fun resetDailyIntakeIfNeeded(userEmail: String, document: DocumentSnapshot, testDate: String? = null) {
+        val today = testDate ?: todayDate // Use testDate for testing, or the actual date
+        val lastUpdateDate = document.getString("lastUpdateDate") ?: today
+        val calorieResult = document.getDouble("calorieResult")?.toInt() ?: 2000 // Default daily goal
+        val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 0
+        val calorieGoalForTomorrow = document.getLong("calorieGoalForTomorrow")?.toInt() ?: calorieResult
 
-        if (lastUpdateDate != todayDate) {
-            val previousDayIntake = document.getLong("calorieIntake") ?: 0L
-            val remainingCalories = (targetDailyCalories - previousDayIntake).coerceAtLeast(0)
+        if (lastUpdateDate != today) {
+            // Calculate remaining calories for the day
+            val remainingCalories = (calorieResult - calorieIntake).coerceAtLeast(0)
+
+            // Calculate tomorrow's calorie goal based on the formula: calorieResult - remainingCalories
+            val updatedCalorieGoalForTomorrow = calorieResult - remainingCalories
 
             val updates = mapOf(
-                "weeklyProgress.${lastUpdateDate}" to previousDayIntake,
                 "calorieIntake" to 0,
                 "proteinIntake" to 0,
                 "fatIntake" to 0,
-                "lastUpdateDate" to todayDate,
-                "calorieGoalForToday" to targetDailyCalories + remainingCalories
+                "remainingCalories" to remainingCalories,
+                "lastUpdateDate" to today,
+                "calorieGoalForToday" to calorieGoalForTomorrow,
+                "calorieGoalForTomorrow" to updatedCalorieGoalForTomorrow
             )
 
             db.collection("users").document(userEmail)
-                .set(updates, SetOptions.merge()) // Use set with merge to update multiple fields
+                .set(updates, SetOptions.merge())
                 .addOnSuccessListener {
-                    Log.d("FoodAdapter", "Daily intake reset for new day.")
+                    Log.d("FoodAdapter", "Reset daily intake and updated calorie goals for new day.")
                 }
                 .addOnFailureListener { e ->
                     Log.e("FoodAdapter", "Error resetting daily intake: ", e)
