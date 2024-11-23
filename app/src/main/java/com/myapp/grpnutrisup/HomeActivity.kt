@@ -130,39 +130,43 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    //update user details
     private fun fetchUserDataAndUpdateUI() {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
             val userEmail = user.email
             userEmail?.let {
                 val userRef = firestore.collection("users").document(it)
-                userRef.get()
-                    .addOnSuccessListener { document ->
-                        if (document != null && document.exists()) {
-                            val calorieGoal = document.getLong("calorieResult")?.toInt() ?: 2000
-                            val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 0
 
-                            caloriesValueTextView.text = "$calorieIntake/$calorieGoal"
-                            caloriesProgressBar.max = calorieGoal
-                            caloriesProgressBar.progress = calorieIntake
-
-                            val proteinIntake = document.getLong("proteinIntake")?.toInt() ?: 0
-                            val fatsIntake = document.getLong("fatIntake")?.toInt() ?: 0
-
-                            proteinValueTextView.text = "$proteinIntake"
-                            fatsValueTextView.text = "$fatsIntake"
-
-                            val healthCompStatus = document.getString("healthComp") ?: "no"
-                            hasHealthComplication = (healthCompStatus == "yes")
-                        }
+                // Add a real-time snapshot listener
+                userRef.addSnapshotListener { document, exception ->
+                    if (exception != null) {
+                        Log.d("HomeActivity", "Failed to listen for changes", exception)
+                        return@addSnapshotListener
                     }
-                    .addOnFailureListener { exception ->
-                        Log.d("HomeActivity", "Failed to fetch user data", exception)
+
+                    if (document != null && document.exists()) {
+                        val calorieGoal = document.getLong("calorieResult")?.toInt() ?: 2000
+                        val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 0
+                        val remainingCalories = document.getLong("remainingCalories")?.toInt() ?: 0
+
+                        // Update UI
+                        caloriesValueTextView.text = "$calorieIntake/$calorieGoal"
+                        caloriesProgressBar.max = calorieGoal
+                        caloriesProgressBar.progress = calorieIntake
+
+                        val proteinIntake = document.getLong("proteinIntake")?.toInt() ?: 0
+                        val fatsIntake = document.getLong("fatIntake")?.toInt() ?: 0
+                        proteinValueTextView.text = "$proteinIntake"
+                        fatsValueTextView.text = "$fatsIntake"
+
+                        hasHealthComplication = (document.getString("healthComp") == "yes")
                     }
+                }
             }
         }
     }
+
 
     private fun scheduleDailyIntakeReset() {
         val workRequest = PeriodicWorkRequestBuilder<ResetIntakeWorker>(24, TimeUnit.HOURS)
@@ -205,6 +209,7 @@ class HomeActivity : AppCompatActivity() {
 // Worker class to reset calorie, protein, and fats intake
 class ResetIntakeWorker(appContext: android.content.Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
+
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -213,16 +218,40 @@ class ResetIntakeWorker(appContext: android.content.Context, workerParams: Worke
         currentUser?.let { user ->
             val userEmail = user.email
             userEmail?.let {
-                firestore.collection("users").document(it)
-                    .update("calorieIntake", 0, "proteinIntake", 0, "fatIntake", 0)
-                    .addOnSuccessListener {
-                        Log.d("ResetIntakeWorker", "Intake reset successfully")
+                val userRef = firestore.collection("users").document(it)
+
+                userRef.get().addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 0
+                        val calorieGoal = document.getLong("calorieResult")?.toInt() ?: 2000
+
+                        // Calculate remaining calories
+                        val remainingCalories = (calorieGoal - calorieIntake).coerceAtLeast(0)
+
+                        // Update tomorrow's calorie goal
+                        val newCalorieGoalForTomorrow = calorieGoal + remainingCalories
+
+                        // Save to Firestore
+                        userRef.update(
+                            mapOf(
+                                "calorieIntake" to 0,
+                                "proteinIntake" to 0,
+                                "fatIntake" to 0,
+                                "remainingCalories" to 0,
+                                "calorieGoalForTomorrow" to newCalorieGoalForTomorrow
+                            )
+                        ).addOnSuccessListener {
+                            Log.d("ResetIntakeWorker", "Intake reset successfully")
+                        }.addOnFailureListener { e ->
+                            Log.e("ResetIntakeWorker", "Failed to reset intake", e)
+                        }
                     }
-                    .addOnFailureListener { e ->
-                        Log.e("ResetIntakeWorker", "Failed to reset intake", e)
-                    }
+                }.addOnFailureListener { exception ->
+                    Log.e("ResetIntakeWorker", "Error fetching user document", exception)
+                }
             }
         }
         return Result.success()
     }
 }
+

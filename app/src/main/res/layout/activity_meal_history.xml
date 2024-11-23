@@ -1,57 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <!-- ImageButton for Back Navigation -->
     <ImageButton
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/back_button"
-        android:layout_marginBottom="10dp"
-        android:contentDescription="Back Button"
-        android:tint="@android:color/black" />
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp" />
 
     <TextView
-        android:id="@+id/mealHistoryTitle"
+        android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Meal History"
-        android:textSize="24sp"
-        android:paddingBottom="8dp"
-        android:textColor="@android:color/black"
-        android:fontFamily="sans-serif-medium" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMeals"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleTextView"
+        android:padding="8dp" />
 
-        <!-- Date Header -->
-        <TextView
-            android:id="@+id/dateTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date" />
-
-        <!-- Total Calories -->
-        <TextView
-            android:id="@+id/totalCaloriesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Calories" />
-
-        <!-- RecyclerView for Meals of the Day -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewMeals"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

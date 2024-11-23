@@ -15,8 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.myapp.grpnutrisup.R
 import com.myapp.grpnutrisup.models.Meal
 import com.myapp.grpnutrisup.models.MealGroup
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MealHistoryAdapter(
     private val context: Context,
@@ -27,7 +25,7 @@ class MealHistoryAdapter(
     private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.activity_meal_history, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_meal_group, parent, false)
         return MealViewHolder(view)
     }
 
@@ -71,36 +69,39 @@ class MealHistoryAdapter(
         db.collection("users").document(userEmail).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    var currentCalories = (document.getLong("calorieIntake") ?: 0L).toInt()
-                    var currentProteins = (document.getLong("proteinIntake") ?: 0L).toInt()
-                    var currentFats = (document.getLong("fatIntake") ?: 0L).toInt()
+                    val currentCalories = (document.getLong("calorieIntake") ?: 0L).toInt()
+                    val currentProteins = (document.getLong("proteinIntake") ?: 0L).toInt()
+                    val currentFats = (document.getLong("fatIntake") ?: 0L).toInt()
                     val calorieResult = (document.getLong("calorieResult") ?: 2000L).toInt()
 
-                    // Step 2: Calculate updated values after removing meals
-                    for (meal in group.meals) {
-                        currentCalories -= meal.calories
-                        currentProteins -= meal.proteins
-                        currentFats -= meal.fat
+                    // Calculate updated values after removing meals
+                    var updatedCalories = currentCalories
+                    var updatedProteins = currentProteins
+                    var updatedFats = currentFats
+
+                    group.meals.forEach { meal ->
+                        updatedCalories -= meal.calories
+                        updatedProteins -= meal.proteins
+                        updatedFats -= meal.fat
                     }
 
-                    currentCalories = currentCalories.coerceAtLeast(0)
-                    currentProteins = currentProteins.coerceAtLeast(0)
-                    currentFats = currentFats.coerceAtLeast(0)
+                    updatedCalories = updatedCalories.coerceAtLeast(0)
+                    updatedProteins = updatedProteins.coerceAtLeast(0)
+                    updatedFats = updatedFats.coerceAtLeast(0)
 
-                    val remainingCalories = (calorieResult - currentCalories).coerceAtLeast(0)
+                    val remainingCalories = (calorieResult - updatedCalories).coerceAtLeast(0)
                     val updatedCalorieGoalForTomorrow = calorieResult + remainingCalories
 
-                    // Step 3: Update intake and calorie goal values in Firestore
+                    // Update intake and calorie goal in Firestore
                     db.collection("users").document(userEmail).update(
                         mapOf(
-                            "calorieIntake" to currentCalories,
-                            "proteinIntake" to currentProteins,
-                            "fatIntake" to currentFats,
+                            "calorieIntake" to updatedCalories,
+                            "proteinIntake" to updatedProteins,
+                            "fatIntake" to updatedFats,
                             "remainingCalories" to remainingCalories,
                             "calorieGoalForTomorrow" to updatedCalorieGoalForTomorrow
                         )
                     ).addOnSuccessListener {
-                        // Step 4: Delete meals from "eatenFoods" collection
                         deleteMealsFromFirestore(userEmail, group, position)
                     }.addOnFailureListener { e ->
                         Log.e("MealHistoryAdapter", "Failed to update intake values: ${e.localizedMessage}")
