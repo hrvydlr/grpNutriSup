@@ -32,6 +32,7 @@
         <activity android:name=".MealActivity"/>
         <activity android:name=".MealHistoryActivity"/>
         <activity android:name=".IntakeHistoryActivity"/>
+        <activity android:name=".LogActivityPage"/>
 
 
 

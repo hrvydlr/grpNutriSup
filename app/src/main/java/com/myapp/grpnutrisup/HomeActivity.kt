@@ -109,6 +109,10 @@ class HomeActivity : AppCompatActivity() {
                     startActivity(Intent(this, HomeActivity::class.java))
                     true
                 }
+                R.id.navigation_activity -> {
+                    startActivity(Intent(this, LogActivityPage::class.java))
+                    true
+                }
                 R.id.navigation_search -> {
                     startActivity(Intent(this, FoodSearchActivity::class.java))
                     true
