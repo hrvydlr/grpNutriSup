@@ -26,10 +26,16 @@ class ProgressHistoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = progressList[position]
-        holder.dayTextView.text = item.day
-        holder.calorieTextView.text = "${item.calorieIntake}/${item.calorieGoal}"
-        holder.fatsTextView.text = item.fats.toString()
-        holder.proteinTextView.text = item.protein.toString()
+
+        // Set day
+        holder.dayTextView.text = item.day ?: "Unknown Day" // Ensure no null value for day
+
+        // Format calories intake vs goal
+        holder.calorieTextView.text = "${item.calorieIntake} / ${item.calorieGoal} kcal"
+
+        // Format and display fats and proteins
+        holder.fatsTextView.text = "Fats: ${item.fats}g"
+        holder.proteinTextView.text = "Protein: ${item.protein}g"
     }
 
     override fun getItemCount(): Int = progressList.size

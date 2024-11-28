@@ -54,7 +54,7 @@ class CalorieResultActivity : AppCompatActivity() {
                 // Calculate remaining calories and set calorie goals for today and tomorrow
                 val remainingCalories = calorieResult // Initial remaining calories could be the calorie result itself
                 val calorieGoalForToday = calorieResult // Goal for today, it can be adjusted dynamically based on other factors
-                val calorieGoalForTomorrow = calorieResult + remainingCalories // Similarly, tomorrow's goal can be the same or adjusted
+                val calorieGoalForTomorrow = calorieGoalForToday + remainingCalories // Similarly, tomorrow's goal can be the same or adjusted
 
                 // Create a map to hold the calorie result and additional data
                 val calorieData: Map<String, Any> = hashMapOf(
