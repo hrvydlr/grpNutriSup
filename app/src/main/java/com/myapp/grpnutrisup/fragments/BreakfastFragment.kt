@@ -68,7 +68,7 @@ class BreakfastFragment : Fragment() {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    val calorieResult = document.getDouble("calorieResult") ?: 2000.0
+                    val calorieResult = document.getDouble("calorieGoalForToday") ?: 2000.0
                     val goal = document.getString("goal") ?: "Maintain"
                     val allergens = document.get("allergens") as? List<String> ?: emptyList()
 
@@ -111,7 +111,7 @@ class BreakfastFragment : Fragment() {
 
                 // Ensure we always get a random selection each day
                 val currentDate = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
-                val selectedFoods = foods.shuffled().take(4)  // Take 4 random foods
+                val selectedFoods = foods // Take foods
 
                 // Save the selected foods in Firestore with today's date
                 val foodData = selectedFoods.map { it.toHashMap() }

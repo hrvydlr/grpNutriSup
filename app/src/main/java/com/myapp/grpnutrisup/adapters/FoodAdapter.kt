@@ -163,7 +163,7 @@ class FoodAdapter(
 
                 // Calculate the new remaining calories (calorieResult - calorieIntake)
                 val calorieResult = document.getDouble("calorieResult")?.toInt() ?: 2000 // Default if not set
-                val updatedRemainingCalories = (calorieResult - updatedCalories).coerceAtLeast(0)
+                val updatedRemainingCalories = (calorieResult - updatedCalories)
 
                 // Calculate calorieGoalForTomorrow using the formula: calorieResult - remainingCalories
                 val updatedCalorieGoalForTomorrow = calorieResult + updatedRemainingCalories

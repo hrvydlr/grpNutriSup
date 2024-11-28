@@ -26,15 +26,6 @@
             android:scaleType="centerCrop"
             android:src="@drawable/banner" />
 
-        <ImageButton
-            android:id="@+id/historyButton"
-            android:layout_marginTop="10dp"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:scaleType="centerCrop"
-            android:background="#F8F4EE"
-            app:srcCompat="@drawable/_26655_history_icon" />
-
     </androidx.cardview.widget.CardView>
 
     <!-- Progress Day 1 and Meal History Buttons -->
@@ -52,14 +43,19 @@
 
         <!-- Progress Day 1 Button -->
         <androidx.cardview.widget.CardView
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            app:cardElevation="4dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onProgressHistoryClicked">
 
             <TextView
+                android:id="@+id/progHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#5CC92D"
@@ -71,8 +67,10 @@
                 android:textSize="16sp" />
         </androidx.cardview.widget.CardView>
 
+
         <!-- Meal History Button -->
         <androidx.cardview.widget.CardView
+
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -81,6 +79,7 @@
             app:cardElevation="4dp">
 
             <TextView
+                android:id="@+id/historyButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#5CC92D"

@@ -1,6 +1,5 @@
 package com.myapp.grpnutrisup
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,12 +9,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.work.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import java.util.*
 import java.util.concurrent.TimeUnit
-import androidx.work.*
 
 @Suppress("DEPRECATION")
 class HomeActivity : AppCompatActivity() {
@@ -27,7 +27,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var fatsValueTextView: TextView
     private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var cardView4: CardView
-    private lateinit var historyButton: ImageButton // Added historyButton
+    private lateinit var historyButton: TextView
+    private lateinit var progHistoryButton : TextView
 
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
@@ -49,7 +50,8 @@ class HomeActivity : AppCompatActivity() {
         fatsValueTextView = findViewById(R.id.fats_value)
         bottomNavigation = findViewById(R.id.bottom_navigation)
         cardView4 = findViewById(R.id.cardView4)
-        historyButton = findViewById(R.id.historyButton) // Initialize historyButton
+        historyButton = findViewById(R.id.historyButton)
+        progHistoryButton = findViewById(R.id.progHistory)
 
         breakfastView = findViewById(R.id.breakfastView)
         lunchView = findViewById(R.id.lunchView)
@@ -59,6 +61,7 @@ class HomeActivity : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         // Set up functionalities
+        setupProressHistoryButtonClickListener()
         setupHistoryButtonClickListener()
         setupBottomNavigation()
 
@@ -66,10 +69,15 @@ class HomeActivity : AppCompatActivity() {
         fetchMealSelectionsAndDisplay()
         scheduleDailyIntakeReset()
     }
-
     private fun setupHistoryButtonClickListener() {
         historyButton.setOnClickListener {
             val intent = Intent(this, MealHistoryActivity::class.java)
+            startActivity(intent)
+        }
+    }
+    private fun setupProressHistoryButtonClickListener() {
+        progHistoryButton.setOnClickListener {
+            val intent = Intent(this, ProgressHistoryActivity::class.java)
             startActivity(intent)
         }
     }
@@ -83,21 +91,19 @@ class HomeActivity : AppCompatActivity() {
             userFoodSelectionsRef.get()
                 .addOnSuccessListener { document ->
                     if (document != null && document.exists()) {
-                        val breakfastList = document.get("Breakfast") as? List<Map<String, Any>> ?: listOf()
-                        val lunchList = document.get("Lunch") as? List<Map<String, Any>> ?: listOf()
-                        val dinnerList = document.get("Dinner") as? List<Map<String, Any>> ?: listOf()
+                        val breakfastList = document.get("Breakfast") as? List<Map<String, Any>> ?: emptyList()
+                        val lunchList = document.get("Lunch") as? List<Map<String, Any>> ?: emptyList()
+                        val dinnerList = document.get("Dinner") as? List<Map<String, Any>> ?: emptyList()
 
-                        val breakfastFoodNames = breakfastList.map { it["food_name"] as? String ?: " " }
-                        val lunchFoodNames = lunchList.map { it["food_name"] as? String ?: " " }
-                        val dinnerFoodNames = dinnerList.map { it["food_name"] as? String ?: " " }
-
-                        breakfastView.text = breakfastFoodNames.joinToString(", ")
-                        lunchView.text = lunchFoodNames.joinToString(", ")
-                        dinnerView.text = dinnerFoodNames.joinToString(", ")
+                        breakfastView.text = breakfastList.map { it["food_name"] as? String ?: " " }.joinToString(", ")
+                        lunchView.text = lunchList.map { it["food_name"] as? String ?: " " }.joinToString(", ")
+                        dinnerView.text = dinnerList.map { it["food_name"] as? String ?: " " }.joinToString(", ")
+                    } else {
+                        Log.d("HomeActivity", "No food selections found for user: $userId")
                     }
                 }
                 .addOnFailureListener { exception ->
-                    Log.d("HomeActivity", "Failed to get food selections", exception)
+                    Log.e("HomeActivity", "Failed to fetch food selections", exception)
                 }
         }
     }
@@ -105,10 +111,7 @@ class HomeActivity : AppCompatActivity() {
     private fun setupBottomNavigation() {
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.navigation_home -> {
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    true
-                }
+                R.id.navigation_home -> true
                 R.id.navigation_activity -> {
                     startActivity(Intent(this, LogActivityPage::class.java))
                     true
@@ -134,7 +137,6 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    //update user details
     private fun fetchUserDataAndUpdateUI() {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
@@ -142,7 +144,6 @@ class HomeActivity : AppCompatActivity() {
             userEmail?.let {
                 val userRef = firestore.collection("users").document(it)
 
-                // Add a real-time snapshot listener
                 userRef.addSnapshotListener { document, exception ->
                     if (exception != null) {
                         Log.d("HomeActivity", "Failed to listen for changes", exception)
@@ -152,25 +153,24 @@ class HomeActivity : AppCompatActivity() {
                     if (document != null && document.exists()) {
                         val calorieGoal = document.getLong("calorieResult")?.toInt() ?: 2000
                         val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 0
-                        val remainingCalories = document.getLong("remainingCalories")?.toInt() ?: 0
 
-                        // Update UI
                         caloriesValueTextView.text = "$calorieIntake/$calorieGoal"
                         caloriesProgressBar.max = calorieGoal
                         caloriesProgressBar.progress = calorieIntake
 
                         val proteinIntake = document.getLong("proteinIntake")?.toInt() ?: 0
                         val fatsIntake = document.getLong("fatIntake")?.toInt() ?: 0
-                        proteinValueTextView.text = "$proteinIntake"
-                        fatsValueTextView.text = "$fatsIntake"
+                        proteinValueTextView.text = proteinIntake.toString()
+                        fatsValueTextView.text = fatsIntake.toString()
 
-                        hasHealthComplication = (document.getString("healthComp") == "yes")
+                        hasHealthComplication = document.getString("healthComp") == "yes"
+                    } else {
+                        Log.d("HomeActivity", "Document does not exist")
                     }
                 }
             }
         }
     }
-
 
     private fun scheduleDailyIntakeReset() {
         val workRequest = PeriodicWorkRequestBuilder<ResetIntakeWorker>(24, TimeUnit.HOURS)
@@ -201,7 +201,14 @@ class HomeActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Health Advisory")
             .setMessage("You have reported a health complication. Please consult a healthcare professional for personalized meal plans.")
-            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton("Yes") { dialog, _ ->
+                dialog.dismiss()
+                val intent = Intent(this, MealActivity::class.java)
+                startActivity(intent)
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
             .create()
             .apply {
                 setCancelable(false)
@@ -210,7 +217,7 @@ class HomeActivity : AppCompatActivity() {
     }
 }
 
-// Worker class to reset calorie, protein, and fats intake
+// Worker class to reset intake
 class ResetIntakeWorker(appContext: android.content.Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
@@ -221,21 +228,17 @@ class ResetIntakeWorker(appContext: android.content.Context, workerParams: Worke
         val currentUser = auth.currentUser
         currentUser?.let { user ->
             val userEmail = user.email
-            userEmail?.let {
-                val userRef = firestore.collection("users").document(it)
+            if (userEmail != null) {
+                try {
+                    val userRef = firestore.collection("users").document(userEmail)
 
-                userRef.get().addOnSuccessListener { document ->
-                    if (document != null && document.exists()) {
+                    val document = userRef.get().await()
+                    if (document.exists()) {
                         val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 0
-                        val calorieGoal = document.getLong("calorieResult")?.toInt() ?: 2000
-
-                        // Calculate remaining calories
+                        val calorieGoal = document.getLong("calorieGoalForToday")?.toInt() ?: 2000
                         val remainingCalories = (calorieGoal - calorieIntake).coerceAtLeast(0)
-
-                        // Update tomorrow's calorie goal
                         val newCalorieGoalForTomorrow = calorieGoal + remainingCalories
 
-                        // Save to Firestore
                         userRef.update(
                             mapOf(
                                 "calorieIntake" to 0,
@@ -244,18 +247,14 @@ class ResetIntakeWorker(appContext: android.content.Context, workerParams: Worke
                                 "remainingCalories" to 0,
                                 "calorieGoalForTomorrow" to newCalorieGoalForTomorrow
                             )
-                        ).addOnSuccessListener {
-                            Log.d("ResetIntakeWorker", "Intake reset successfully")
-                        }.addOnFailureListener { e ->
-                            Log.e("ResetIntakeWorker", "Failed to reset intake", e)
-                        }
+                        ).await()
                     }
-                }.addOnFailureListener { exception ->
-                    Log.e("ResetIntakeWorker", "Error fetching user document", exception)
+                } catch (e: Exception) {
+                    Log.e("ResetIntakeWorker", "Failed to reset intake", e)
+                    return Result.failure()
                 }
             }
         }
         return Result.success()
     }
 }
-
