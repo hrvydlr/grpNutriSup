@@ -151,7 +151,7 @@ class HomeActivity : AppCompatActivity() {
                     }
 
                     if (document != null && document.exists()) {
-                        val calorieGoal = document.getLong("calorieResult")?.toInt() ?: 2000
+                        val calorieGoal = document.getLong("calorieGoalForToday")?.toInt() ?: 2000
                         val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 0
 
                         caloriesValueTextView.text = "$calorieIntake/$calorieGoal"

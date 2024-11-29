@@ -71,7 +71,7 @@ class DinnerFragment : Fragment() {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    val calorieResult = document.getDouble("calorieResult") ?: 2000.0
+                    val calorieResult = document.getDouble("calorieGoalForToday") ?: 2000.0
                     val goal = document.getString("goal") ?: "Maintain"
                     val allergens = document.get("allergens") as? List<String> ?: emptyList()
 
@@ -148,8 +148,8 @@ class DinnerFragment : Fragment() {
                     }
                 }
 
-                // Select 4 foods randomly
-                val selectedFoods = foods.shuffled().take(4)
+                // Select foods for Dinner
+                val selectedFoods = foods
                 Log.d("DinnerFragment", "Selected foods: ${selectedFoods.size}")
 
                 // Save selection with today's date
