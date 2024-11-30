@@ -77,12 +77,12 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.14.2") // Add Glide
     annotationProcessor("com.github.bumptech.glide:compiler:4.14.2") // Glide annotation processor
     implementation("androidx.work:work-runtime-ktx:2.8.1")
-    implementation ("com.google.android.material:material:1.4.0")
+//    implementation ("com.google.android.material:material:1.4.0")
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
     implementation ("com.google.code.gson:gson:2.8.9")
     implementation ("com.google.firebase:firebase-firestore:24.7.1")
     implementation ("com.google.firebase:firebase-auth:21.0.6")
-
+    implementation ("com.google.android.material:material:1.9.0")
 
 
 
