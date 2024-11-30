@@ -50,6 +50,10 @@ class MealActivity : AppCompatActivity() {
                     startActivity(Intent(this, FoodSearchActivity::class.java))
                     true
                 }
+                R.id.navigation_activity -> {
+                    startActivity(Intent(this, LogActivityPage::class.java))
+                    true
+                }
                 R.id.navigation_meal -> {
                     true
                 }
