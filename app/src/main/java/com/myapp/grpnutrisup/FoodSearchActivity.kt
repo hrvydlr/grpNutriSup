@@ -125,6 +125,10 @@ class FoodSearchActivity : AppCompatActivity() {
                     startActivity(Intent(this, HomeActivity::class.java))
                     true
                 }
+                R.id.navigation_activity -> {
+                    startActivity(Intent(this, LogActivityPage::class.java))
+                    true
+                }
                 R.id.navigation_search -> true
                 R.id.navigation_meal -> {
                     if (hasHealthComplication) {

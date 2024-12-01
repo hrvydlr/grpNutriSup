@@ -165,6 +165,10 @@ class ProfileActivity : AppCompatActivity() {
                     navigateTo(HomeActivity::class.java)
                     true
                 }
+                R.id.navigation_activity -> {
+                    navigateTo(LogActivityPage::class.java)
+                    true
+                }
                 R.id.navigation_search -> {
                     navigateTo(FoodSearchActivity::class.java)
                     true
