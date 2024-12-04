@@ -23,4 +23,11 @@
         <item>Cycle</item>
         <item>Swim</item>
     </string-array>
+
+    <string-array name="activity_speeds">
+        <item>Slow</item>
+        <item>Moderate</item>
+        <item>Fast</item>
+        <item>Very Fast</item>
+    </string-array>
 </resources>

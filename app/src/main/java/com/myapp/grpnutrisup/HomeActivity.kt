@@ -234,14 +234,18 @@ class ResetIntakeWorker(appContext: android.content.Context, workerParams: Worke
 
                     val document = userRef.get().await()
                     if (document.exists()) {
+                        val calorieResult = document.getLong("calorieResult")?.toInt() ?: 2000
                         val calorieGoalForToday = document.getLong("calorieGoalForToday")?.toInt() ?: 2000
                         val calorieIntake = document.getLong("calorieIntake")?.toInt() ?: 0
                         val remainingCalories = (calorieGoalForToday - calorieIntake)
-                        val calorieGoalForTomorrow = calorieGoalForToday + remainingCalories
+                        val calorieGoalForTomorrow = calorieResult + remainingCalories
 
                         // Reset the intake values and update calorieGoalForToday and calorieGoalForTomorrow
+                        // Save historical data and reset fields
                         userRef.update(
                             mapOf(
+                                "yesterdayCalorieIntake" to calorieIntake,
+                                "yesterdayCalorieGoal" to calorieGoalForToday,
                                 "calorieIntake" to 0,
                                 "proteinIntake" to 0,
                                 "fatIntake" to 0,

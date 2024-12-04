@@ -17,6 +17,7 @@ import com.myapp.grpnutrisup.models.ActivityLog
 class LogActivityPage : AppCompatActivity() {
 
     private lateinit var activityTypeSpinner: Spinner
+    private lateinit var speedSpinner: Spinner // New Spinner for speed selection
     private lateinit var durationInput: EditText
     private lateinit var logActivityButton: Button
     private lateinit var successMessage: TextView
@@ -40,14 +41,16 @@ class LogActivityPage : AppCompatActivity() {
 
         // Bind views
         activityTypeSpinner = findViewById(R.id.activity_type_spinner)
+        speedSpinner = findViewById(R.id.intensity_spinner) // Speed Spinner
         durationInput = findViewById(R.id.duration_input)
         logActivityButton = findViewById(R.id.log_activity_button)
         successMessage = findViewById(R.id.success_message)
         bottomNavigation = findViewById(R.id.bottom_navigation)
         loggedActivitiesRecyclerView = findViewById(R.id.logged_activities_recycler_view)
 
-        // Populate Spinner with data from strings.xml
+        // Populate Spinners
         setupActivityTypeSpinner()
+        setupSpeedSpinner() // New setup for speed levels
 
         // Setup bottom navigation
         setupBottomNavigation()
@@ -99,6 +102,17 @@ class LogActivityPage : AppCompatActivity() {
         }
     }
 
+    private fun setupSpeedSpinner() {
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.activity_speeds, // New array for speeds (e.g., slow, moderate, etc.)
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            speedSpinner.adapter = adapter
+        }
+    }
+
     private fun fetchUserDetails() {
         val currentUser = auth.currentUser ?: return
         val userEmail = currentUser.email ?: return
@@ -121,6 +135,7 @@ class LogActivityPage : AppCompatActivity() {
 
     private fun logActivity() {
         val selectedActivity = activityTypeSpinner.selectedItem.toString()
+        val selectedSpeed = speedSpinner.selectedItem.toString() // Get selected speed
         val durationStr = durationInput.text.toString()
 
         if (durationStr.isEmpty()) {
@@ -129,16 +144,16 @@ class LogActivityPage : AppCompatActivity() {
         }
 
         val duration = durationStr.toInt()
-        val caloriesBurned = calculateCaloriesBurned(selectedActivity, duration)
+        val caloriesBurned = calculateCaloriesBurned(selectedActivity, selectedSpeed, duration)
 
-        if (caloriesBurned > 0) {
-            updateCaloriesAndLogActivity(selectedActivity, duration, caloriesBurned)
+        if (caloriesBurned >= 0) {
+            updateCaloriesAndLogActivity(selectedActivity, selectedSpeed, duration, caloriesBurned)
         } else {
-            Toast.makeText(this, "Activity type not supported.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Activity type or speed not supported.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun calculateCaloriesBurned(activity: String, duration: Int): Int {
+    private fun calculateCaloriesBurned(activity: String, speed: String, duration: Int): Int {
         val metValues = mapOf(
             "Walk" to 3.5,
             "Run" to 7.5,
@@ -146,11 +161,19 @@ class LogActivityPage : AppCompatActivity() {
             "Swim" to 8.0
         )
 
+        val speedMultipliers = mapOf(
+            "Slow" to 0.8,
+            "Moderate" to 1.0,
+            "Fast" to 1.2,
+            "Very Fast" to 1.5
+        )
+
         val met = metValues[activity] ?: return 0
-        return ((met * userWeight * duration) / 60).toInt()
+        val multiplier = speedMultipliers[speed] ?: return 0
+        return ((met * multiplier * userWeight * duration) / 60).toInt()
     }
 
-    private fun updateCaloriesAndLogActivity(activity: String, duration: Int, caloriesBurned: Int) {
+    private fun updateCaloriesAndLogActivity(activity: String, speed: String, duration: Int, caloriesBurned: Int) {
         val currentUser = auth.currentUser ?: return
         val userEmail = currentUser.email ?: return
 
@@ -158,12 +181,12 @@ class LogActivityPage : AppCompatActivity() {
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     val currentCalories = document.getLong("calorieIntake")?.toInt() ?: 0
-                    val updatedCalories = (currentCalories - caloriesBurned).coerceAtLeast(0)
+                    val updatedCalories = (currentCalories - caloriesBurned)
 
                     firestore.collection("users").document(userEmail)
                         .update("calorieIntake", updatedCalories)
                         .addOnSuccessListener {
-                            saveActivityLog(activity, duration, caloriesBurned)
+                            saveActivityLog(activity, speed, duration, caloriesBurned)
                         }
                         .addOnFailureListener { e ->
                             Log.e("LogActivityPage", "Failed to update calories", e)
@@ -175,12 +198,13 @@ class LogActivityPage : AppCompatActivity() {
             }
     }
 
-    private fun saveActivityLog(activity: String, duration: Int, caloriesBurned: Int) {
+    private fun saveActivityLog(activity: String, speed: String, duration: Int, caloriesBurned: Int) {
         val currentUser = auth.currentUser ?: return
         val userEmail = currentUser.email ?: return
 
         val activityLog = hashMapOf(
             "activity" to activity,
+            "speed" to speed, // Log speed
             "duration" to duration,
             "caloriesBurned" to caloriesBurned,
             "timestamp" to System.currentTimeMillis()
