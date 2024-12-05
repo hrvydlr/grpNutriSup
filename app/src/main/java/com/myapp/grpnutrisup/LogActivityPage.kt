@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,7 @@ import com.myapp.grpnutrisup.models.ActivityLog
 class LogActivityPage : AppCompatActivity() {
 
     private lateinit var activityTypeSpinner: Spinner
-    private lateinit var speedSpinner: Spinner // New Spinner for speed selection
+    private lateinit var speedSpinner: Spinner
     private lateinit var durationInput: EditText
     private lateinit var logActivityButton: Button
     private lateinit var successMessage: TextView
@@ -41,7 +42,7 @@ class LogActivityPage : AppCompatActivity() {
 
         // Bind views
         activityTypeSpinner = findViewById(R.id.activity_type_spinner)
-        speedSpinner = findViewById(R.id.intensity_spinner) // Speed Spinner
+        speedSpinner = findViewById(R.id.intensity_spinner)
         durationInput = findViewById(R.id.duration_input)
         logActivityButton = findViewById(R.id.log_activity_button)
         successMessage = findViewById(R.id.success_message)
@@ -50,7 +51,7 @@ class LogActivityPage : AppCompatActivity() {
 
         // Populate Spinners
         setupActivityTypeSpinner()
-        setupSpeedSpinner() // New setup for speed levels
+        setupSpeedSpinner()
 
         // Setup bottom navigation
         setupBottomNavigation()
@@ -135,7 +136,7 @@ class LogActivityPage : AppCompatActivity() {
 
     private fun logActivity() {
         val selectedActivity = activityTypeSpinner.selectedItem.toString()
-        val selectedSpeed = speedSpinner.selectedItem.toString() // Get selected speed
+        val selectedSpeed = speedSpinner.selectedItem.toString()
         val durationStr = durationInput.text.toString()
 
         if (durationStr.isEmpty()) {
@@ -181,7 +182,11 @@ class LogActivityPage : AppCompatActivity() {
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     val currentCalories = document.getLong("calorieIntake")?.toInt() ?: 0
-                    val updatedCalories = (currentCalories - caloriesBurned)
+                    val updatedCalories = currentCalories - caloriesBurned
+
+                    if (updatedCalories < 0) {
+                        showNegativeCalorieWarning(activity, caloriesBurned)
+                    }
 
                     firestore.collection("users").document(userEmail)
                         .update("calorieIntake", updatedCalories)
@@ -198,13 +203,25 @@ class LogActivityPage : AppCompatActivity() {
             }
     }
 
+    private fun showNegativeCalorieWarning(activity: String, caloriesBurned: Int) {
+        val message = "Your intake is negative because of the activity '$activity' that burned $caloriesBurned calories without eating yet. Consider refueling to meet your nutritional needs."
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Warning: Negative Calorie Intake")
+        builder.setMessage(message)
+        builder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
     private fun saveActivityLog(activity: String, speed: String, duration: Int, caloriesBurned: Int) {
         val currentUser = auth.currentUser ?: return
         val userEmail = currentUser.email ?: return
 
         val activityLog = hashMapOf(
             "activity" to activity,
-            "speed" to speed, // Log speed
+            "speed" to speed,
             "duration" to duration,
             "caloriesBurned" to caloriesBurned,
             "timestamp" to System.currentTimeMillis()
@@ -216,7 +233,7 @@ class LogActivityPage : AppCompatActivity() {
                 successMessage.text = "Activity logged! Calories burned: $caloriesBurned"
                 successMessage.visibility = View.VISIBLE
                 durationInput.text.clear()
-                fetchLoggedActivities() // Refresh activity logs
+                fetchLoggedActivities()
             }
             .addOnFailureListener { e ->
                 Log.e("LogActivityPage", "Failed to log activity", e)
